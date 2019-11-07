@@ -8,7 +8,6 @@ using UnityEditor;
 [InitializeOnLoad]
 public class MyHeirarchy : MonoBehaviour
 {
-
     private static Vector2 offset = Vector2.up * 2;
 
     static MyHeirarchy()

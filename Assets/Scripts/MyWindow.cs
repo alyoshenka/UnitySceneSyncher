@@ -29,7 +29,7 @@ public class MyWindow : EditorWindow
         num = EditorGUILayout.Slider("Scale", num, 0, 2);
         EditorGUILayout.EndToggleGroup();
 
-        if(GUILayout.Button("button"))
+        if(GUILayout.Button(new GUIContent("boop", "beep boop")))
         {
             Debug.Log("boop");
         }
