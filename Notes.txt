@@ -1,0 +1,12 @@
+https://www.gamasutra.com/blogs/PiotrSobolewski/20160615/275085/You_can_restore_unsaved_scene_after_Unity_crash.php
+where unity stores temporary scene files ^
+
+https://docs.unity3d.com/ScriptReference/SceneManagement.EditorSceneManager.OpenScene.html
+open new scene from editor ^
+
+https://docs.unity3d.com/ScriptReference/EditorWindow-focusedWindow.html
+get focused editor window ^
+
+http://csharp.net-informations.com/communications/csharp-server-socket.htm
+c# socket networking ^ (multithreaded connections on next tutorial)
+
