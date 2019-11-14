@@ -7,9 +7,9 @@ Assets/AssetStoreTools*
 
 Assets/ProCore/
 
-*/bin/
-*/obj/
-*/Properties/
+[Bb]in/
+[Oo]bj/
+Properties/
 
 # Visual Studio cache directory
 .vs/
