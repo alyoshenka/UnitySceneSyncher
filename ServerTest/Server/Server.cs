@@ -28,13 +28,20 @@ namespace LiteNetLibTest
                 peer.Send(writer, DeliveryMethod.ReliableOrdered);
             };
 
-            while (!Console.KeyAvailable)
+            listener.NetworkReceiveEvent += Listener_NetworkReceiveEvent;
+
+            while (true)
             {
                 server.PollEvents();
                 Thread.Sleep(15);
             }
 
             server.Stop();
+        }
+
+        private static void Listener_NetworkReceiveEvent(NetPeer peer, NetPacketReader reader, DeliveryMethod deliveryMethod)
+        {
+            Console.WriteLine("Recieved message: {2} of type {0} from peer {1}", deliveryMethod.ToString(), peer.Id, reader.GetString());
         }
     }
 }

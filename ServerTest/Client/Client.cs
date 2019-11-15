@@ -2,11 +2,14 @@
 
 using LiteNetLib;
 using System.Threading;
+using LiteNetLib.Utils;
 
 namespace LiteNetLibTest
 {
     class Client
     {
+        static NetPeer server;
+
         static void Main(string[] args)
         {
             EventBasedNetListener listener = new EventBasedNetListener();
@@ -17,12 +20,24 @@ namespace LiteNetLibTest
             {
                 Console.WriteLine("We got {0}", dataReader.GetString(100));
                 dataReader.Recycle();
+
+                server = fromPeer;
             };
 
-            while (!Console.KeyAvailable)
+            // Thread.Sleep(200);
+
+            while (Console.ReadKey().Key != ConsoleKey.Escape)
             {
                 client.PollEvents();
-                Thread.Sleep(15);
+                // Thread.Sleep(15);
+
+                string msg = Console.ReadLine();
+                if(Console.ReadKey().Key == ConsoleKey.Enter)
+                {
+                    NetDataWriter writer = new NetDataWriter();
+                    writer.Put(msg);
+                    server?.Send(writer, DeliveryMethod.ReliableOrdered);
+                }
             }
 
             client.Stop();
