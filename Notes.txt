@@ -10,3 +10,8 @@ get focused editor window ^
 http://csharp.net-informations.com/communications/csharp-server-socket.htm
 c# socket networking ^ (multithreaded connections on next tutorial)
 
+ Since Unity needs to keep track of all changes to the project folder, 
+you should always use the AssetDatabase API rather than the filesystem 
+if you want to access or modify asset data.
+https://docs.unity3d.com/Manual/AssetDatabase.html
+
