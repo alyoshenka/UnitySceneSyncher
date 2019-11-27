@@ -19,7 +19,7 @@ ExportedObj/
 .consulo/
 *.csproj
 *.unityproj
-*.sln
+UnitySceneSyncher.sln
 *.suo
 *.tmp
 *.user
