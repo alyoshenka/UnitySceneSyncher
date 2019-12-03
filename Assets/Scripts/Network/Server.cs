@@ -1,33 +1,72 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
+
+using LiteNetLib;
+using LiteNetLib.Utils;
+using System.Threading;
+
 using UnityEngine;
 
-using System;
-using System.Net;
-using System.Net.Sockets;
-using System.Text;
-
-public class Server : MonoBehaviour
+public class Server
 {
-    Socket s;
-    IPAddress broadcast;
+    EventBasedNetListener listener;
+    NetManager server;
 
-    void Start()
+    // TODO: file io or gui for settings
+
+    int port;
+    string connectionKey;
+
+    int maxPeersCount;
+
+    bool shouldRun;
+
+    public Server()
     {
-        s = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-        broadcast = IPAddress.Parse("192.168.0.4");
+        shouldRun = true;
+        maxPeersCount = 10;
+
+        port = 9050;
+        connectionKey = "SomeConnectionKey";
+
+        listener = new EventBasedNetListener();
+        server = new NetManager(listener);
     }
 
-    void Update()
+    public void Start()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        server.Start(port);
+
+        Debug.Log("server started");
+
+        // move to separate functions
+        listener.ConnectionRequestEvent += request =>
         {
-            byte[] sendbuf = Encoding.ASCII.GetBytes("boop");
-            IPEndPoint ep = new IPEndPoint(broadcast, 11000);
+            if (server.PeersCount < maxPeersCount) { request.AcceptIfKey(connectionKey); }
+            else { request.Reject(); }
+        };
 
-            s.SendTo(sendbuf, ep);
+        listener.PeerConnectedEvent += peer =>
+        {
+            Debug.Log("We got connection: " + peer.EndPoint); // Show peer ip
+            NetDataWriter writer = new NetDataWriter();                 // Create writer class
+            writer.Put("Hello client!");                                // Put some string
+            peer.Send(writer, DeliveryMethod.ReliableOrdered);             // Send with reliability
+        };
+    }
 
-            Debug.Log("message sent");
+    public void Run()
+    {
+        while (shouldRun)
+        {
+            server.PollEvents();
+            Thread.Sleep(15);
         }
+
+        server.Stop();
+    }
+
+    public void Stop()
+    {
+        shouldRun = false;
     }
 }

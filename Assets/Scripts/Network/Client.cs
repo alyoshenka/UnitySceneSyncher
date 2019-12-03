@@ -1,60 +1,65 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System;
 
-using System;
-using System.Net;
-using System.Net.Sockets;
-using System.Text;
-
+using LiteNetLib;
+using LiteNetLib.Utils;
 using System.Threading;
 
-public class Client : MonoBehaviour
+using UnityEngine;
+
+public class Client
 {
-    const int listenPort = 11000;
+    EventBasedNetListener listener;
+    NetManager client;
 
-    UdpClient listener;
-    IPEndPoint groupEP;
+    string hostIP;
+    int port;
+    string connectionKey;
 
-    Thread worker;
+    bool shouldRun;
 
-    private void Start()
+    public Client()
     {
-        listener = new UdpClient(listenPort);
-        groupEP = new IPEndPoint(IPAddress.Any, listenPort);
+        shouldRun = true;
 
-        worker = new Thread(Go);
-        worker.Start();
+        hostIP = "localhost";
+        port = 9050;
+        connectionKey = "SomeConnectionKey";
 
-        Debug.Log("listener started");
+        listener = new EventBasedNetListener();
+        client = new NetManager(listener);
     }
 
-    private void Update()
+    public void Start()
     {
-        if (Input.GetKeyDown(KeyCode.Escape)) { worker.Abort(); }  
-    }
+        client.Start();
+        client.Connect(hostIP, port, connectionKey);
 
-    void Go()
-    {
-        try
+        Debug.Log("client started");
+
+
+        // move to serparate function
+        listener.NetworkReceiveEvent += (fromPeer, dataReader, deliveryMethod) =>
         {
-            while (true)
-            {
-                Debug.Log("Waiting for broadcast");
-                byte[] bytes = listener.Receive(ref groupEP);
-
-                Debug.Log("Recieved from " + groupEP);
-                Debug.Log("Message: " + Encoding.ASCII.GetString(bytes, 0, bytes.Length));
-            }
-        }
-        catch (SocketException e) { Debug.LogError(e); }
-        finally { listener.Close(); }
-
-        Debug.Log("listener closed");
+            Debug.Log("We got: " + dataReader.GetString(100 /* max length of string */));
+            dataReader.Recycle();
+        };
     }
 
-    void Boop()
+    public void Stop()
     {
-        while (true) { Debug.Log("boop"); }
+        shouldRun = false;
+    }
+
+    public void Run()
+    {
+        Debug.Log("run client");
+
+        while (shouldRun)
+        {
+            client.PollEvents();
+            Thread.Sleep(15);
+        }
+
+        client.Stop();
     }
 }
