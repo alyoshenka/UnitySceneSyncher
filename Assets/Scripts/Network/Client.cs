@@ -6,10 +6,19 @@ using System.Threading;
 
 using UnityEngine;
 
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
+
+/// <summary>
+/// Client network connection
+/// </summary>
 public class Client
 {
     EventBasedNetListener listener;
     NetManager client;
+    NetPeer server = null;
+
+    Developer developer;
 
     string hostIP;
     int port;
@@ -42,6 +51,13 @@ public class Client
         {
             Debug.Log("We got: " + dataReader.GetString(100 /* max length of string */));
             dataReader.Recycle();
+
+            if(null == server)
+            {
+                server = fromPeer;
+                Debug.Log("server initialized");
+            }
+
         };
     }
 
@@ -61,5 +77,19 @@ public class Client
         }
 
         client.Stop();
+    }
+
+    // send transform data to server
+    public void PushTransform()
+    {
+        developer.num = 5; // actually initialize developer
+
+        BinaryFormatter bf = new BinaryFormatter();
+        MemoryStream ms = new MemoryStream();
+        bf.Serialize(ms, developer);
+        byte[] transform = ms.ToArray();
+
+        server.Send(transform, DeliveryMethod.ReliableOrdered);
+        Debug.Log(transform.Length + " sent");
     }
 }

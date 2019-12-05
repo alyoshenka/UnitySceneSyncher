@@ -6,6 +6,9 @@ using System.Threading;
 
 using UnityEngine;
 
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
+
 public class Server
 {
     EventBasedNetListener listener;
@@ -52,13 +55,42 @@ public class Server
             writer.Put("Hello client!");                                // Put some string
             peer.Send(writer, DeliveryMethod.ReliableOrdered);             // Send with reliability
         };
+
+        listener.NetworkReceiveEvent += (peer, reader, deliveryMethod) =>
+        {
+            // get type of data
+            Debug.Log("data recieved");
+            try
+            {
+                Debug.Log("decoding " + NetworkDataSize.array[0].size + " bytes");
+                byte[] data = new byte[NetworkDataSize.array[0].size];
+                reader.GetBytes(data, 0, NetworkDataSize.array[0].size);
+
+                BinaryFormatter bf = new BinaryFormatter();
+                MemoryStream ms = new MemoryStream(data);
+                Developer dev = (Developer)bf.Deserialize(ms);
+
+                Debug.Log(dev.num);
+            }
+            catch (Exception e)
+            {
+                Debug.Log(e);
+            }
+        };
+
     }
 
     public void Run()
     {
         while (shouldRun)
         {
-            server.PollEvents();
+            server.PollEvents(); // get events
+
+            // process events
+
+            // SendToAll
+            //      send data to clients
+
             Thread.Sleep(15);
         }
 

@@ -4,6 +4,11 @@ using UnityEngine;
 using UnityEditor;
 using System.Threading;
 
+// todo: server data
+//  num connections
+//  ping
+//  etc
+
 public class ServerWindow : EditorWindow
 {
     string serverAddress = "localhost";

@@ -7,6 +7,9 @@ using System.Threading;
 // disconnect if closed window?????
 // reload status when open window????
 
+/// <summary>
+/// displays Unity client GUI
+/// </summary>
 public class ClientWindow : EditorWindow
 {
     string serverAddress = "localhost";
@@ -17,7 +20,7 @@ public class ClientWindow : EditorWindow
     string disconnectMsg = "Disconnect";
 
     string statusMsg;
-    string buttonMsg;
+    string buttonMsg = "Connect";
 
     bool connected = false;
 
@@ -63,6 +66,11 @@ public class ClientWindow : EditorWindow
                 client.Stop();
                 clientThread.Join();
             }
+        }
+
+        if (GUILayout.Button(new GUIContent("Push Transform")))
+        {
+            client.PushTransform();
         }
     }
 }
