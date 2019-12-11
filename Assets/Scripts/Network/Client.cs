@@ -36,6 +36,8 @@ public class Client
 
         listener = new EventBasedNetListener();
         client = new NetManager(listener);
+
+        developer = new Developer("devvy");
     }
 
     public void Start()
@@ -57,7 +59,6 @@ public class Client
                 server = fromPeer;
                 Debug.Log("server initialized");
             }
-
         };
     }
 
@@ -82,7 +83,7 @@ public class Client
     // send transform data to server
     public void PushTransform()
     {
-        developer.num = 5; // actually initialize developer
+        developer.CaptureData();
 
         BinaryFormatter bf = new BinaryFormatter();
         MemoryStream ms = new MemoryStream();

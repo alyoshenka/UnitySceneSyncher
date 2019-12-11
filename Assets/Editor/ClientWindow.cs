@@ -19,7 +19,6 @@ public class ClientWindow : EditorWindow
     string connectMsg = "Connect";
     string disconnectMsg = "Disconnect";
 
-    string statusMsg;
     string buttonMsg = "Connect";
 
     bool connected = false;
@@ -27,17 +26,20 @@ public class ClientWindow : EditorWindow
     static Client client;
     static Thread clientThread;
 
+    static int i;
+
     [MenuItem("Window/UnitySceneSyncher/ClientWindow")]
     static void Init()
     {
         ClientWindow win = (ClientWindow)GetWindow(typeof(ClientWindow));
         win.Show();
+
+        i = 0;
     }
 
     private void OnGUI()
     {
         GUILayout.Label("Client Settings", EditorStyles.boldLabel);
-        GUILayout.Label(statusMsg, EditorStyles.label);
 
         serverAddress = EditorGUILayout.TextField("Server Address", serverAddress);
 
@@ -47,7 +49,6 @@ public class ClientWindow : EditorWindow
             if (connected)
             {
                 buttonMsg = disconnectMsg;
-                statusMsg = connectedMsg;
 
                 Debug.Log("connected to server at " + serverAddress);
 
@@ -59,7 +60,6 @@ public class ClientWindow : EditorWindow
             else
             {
                 buttonMsg = connectMsg;
-                statusMsg = disconnectedMsg;
 
                 Debug.Log("disconnected from " + serverAddress);
 
@@ -72,5 +72,15 @@ public class ClientWindow : EditorWindow
         {
             client.PushTransform();
         }
+    }
+
+    private void OnDestroy()
+    {
+        Debug.Log("window closed");
+    }
+
+    private void OnInspectorUpdate()
+    {
+        
     }
 }

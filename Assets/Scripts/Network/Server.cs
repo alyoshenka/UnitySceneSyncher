@@ -70,7 +70,9 @@ public class Server
                 MemoryStream ms = new MemoryStream(data);
                 Developer dev = (Developer)bf.Deserialize(ms);
 
-                Debug.Log(dev.num);
+                Debug.Log("Recieved nam: " + dev.GetName());
+                Debug.Log("Recieved pos: " + dev.GetPosition());
+                Debug.Log("Revieved rot: " + dev.GetRotation().eulerAngles);
             }
             catch (Exception e)
             {

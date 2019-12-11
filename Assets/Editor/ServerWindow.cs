@@ -15,9 +15,9 @@ public class ServerWindow : EditorWindow
     string serverMsg = "waiting to start server";
     string buttonMsg = "Start Server";
 
-    bool serverRunning = false;
+    bool serverRunning { get => null == server; }
 
-    static Server server;
+    static Server server = null;
     static Thread serverThread;
 
     [MenuItem("Window/UnitySceneSyncher/ServerWindow")]
@@ -36,7 +36,6 @@ public class ServerWindow : EditorWindow
 
         if (GUILayout.Button(new GUIContent(buttonMsg)))
         {
-            serverRunning = !serverRunning;
             if (serverRunning)
             {
                 serverMsg = "server running";
@@ -57,6 +56,9 @@ public class ServerWindow : EditorWindow
 
                 server.Stop();
                 serverThread.Join();
+
+                server = null;
+                serverThread = null;
             }            
         }
     }

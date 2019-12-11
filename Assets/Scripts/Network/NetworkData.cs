@@ -9,6 +9,10 @@ using System.Runtime.InteropServices;
 /// </summary>
 public enum NetworkDataType
 {
+    // something something about these being bitwise
+    // so i can say which bit of info i am sending
+
+
     developer, // full developer data
     message // developer message (string)
 }
@@ -30,7 +34,48 @@ public struct NetworkDataSize
 
     public static NetworkDataSize[] array = new NetworkDataSize[]
     {
-        new NetworkDataSize(NetworkDataType.developer, 127), // check that this works
+        new NetworkDataSize(NetworkDataType.developer, 307), // check that this works
         new NetworkDataSize(NetworkDataType.message, 0)
     };
 }
+
+#region Serializable Structs
+
+[System.Serializable]
+public struct Vector3_S
+{
+    public float x, y, z;
+
+    public Vector3_S(Vector3 orig)
+    {
+        x = orig.x;
+        y = orig.y;
+        z = orig.z;
+    }
+
+    public Vector3 ToVector3()
+    {
+        return new Vector3(x, y, z);
+    }
+}
+
+[System.Serializable]
+public struct Quaternion_S
+{
+    public float x, y, z, w;
+
+    public Quaternion_S(Quaternion orig)
+    {
+        x = orig.x;
+        y = orig.y;
+        z = orig.z;
+        w = orig.w;
+    }
+
+    public Quaternion ToQuaternion()
+    {
+        return new Quaternion(x, y, z, w);
+    }
+}
+
+#endregion
