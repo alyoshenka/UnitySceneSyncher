@@ -16,6 +16,7 @@ public class Developer
 
     private Developer() { }
 
+
     public Developer(string name)
     {
         position = new Vector3_S(Vector3.zero);

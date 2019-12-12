@@ -18,6 +18,7 @@ public class ClientWindow : EditorWindow
     string disconnectedMsg = "waiting to connect";
     string connectMsg = "Connect";
     string disconnectMsg = "Disconnect";
+    string devName = "your_name_here";
 
     string buttonMsg = "Connect";
 
@@ -42,6 +43,7 @@ public class ClientWindow : EditorWindow
         GUILayout.Label("Client Settings", EditorStyles.boldLabel);
 
         serverAddress = EditorGUILayout.TextField("Server Address", serverAddress);
+        devName = EditorGUILayout.TextField("Your Name", devName);
 
         if (GUILayout.Button(new GUIContent(buttonMsg)))
         {
@@ -50,9 +52,9 @@ public class ClientWindow : EditorWindow
             {
                 buttonMsg = disconnectMsg;
 
-                Debug.Log("connected to server at " + serverAddress);
+                Debug.Log("connected to server as " + devName + " at " + serverAddress);
 
-                client = new Client();
+                client = new Client(devName);
                 client.Start();
                 clientThread = new Thread(client.Run);
                 clientThread.Start();
@@ -77,10 +79,12 @@ public class ClientWindow : EditorWindow
     private void OnDestroy()
     {
         Debug.Log("window closed");
+
+        // disconnect
     }
 
     private void OnInspectorUpdate()
     {
-        
+        // client?.PushTransform();
     }
 }

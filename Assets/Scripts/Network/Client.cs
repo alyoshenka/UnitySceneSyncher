@@ -5,6 +5,7 @@ using LiteNetLib.Utils;
 using System.Threading;
 
 using UnityEngine;
+using UnityEditor;
 
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
@@ -26,7 +27,9 @@ public class Client
 
     bool shouldRun;
 
-    public Client()
+    private Client() { }
+
+    public Client(string name)
     {
         shouldRun = true;
 
@@ -37,7 +40,7 @@ public class Client
         listener = new EventBasedNetListener();
         client = new NetManager(listener);
 
-        developer = new Developer("devvy");
+        developer = new Developer(name);
     }
 
     public void Start()
@@ -83,12 +86,15 @@ public class Client
     // send transform data to server
     public void PushTransform()
     {
-        developer.CaptureData();
+        developer.SetPosition(SceneView.lastActiveSceneView.camera.transform.position);
+        developer.SetRotation(SceneView.lastActiveSceneView.camera.transform.rotation);
 
         BinaryFormatter bf = new BinaryFormatter();
         MemoryStream ms = new MemoryStream();
         bf.Serialize(ms, developer);
         byte[] transform = ms.ToArray();
+
+        Debug.Log(developer.DisplayString());
 
         server.Send(transform, DeliveryMethod.ReliableOrdered);
         Debug.Log(transform.Length + " sent");
