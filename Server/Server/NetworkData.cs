@@ -32,9 +32,11 @@ public struct NetworkDataSize
         size = _size;
     }
 
+
+    // this is no longer needed
     public static NetworkDataSize[] array = new NetworkDataSize[]
     {
-        new NetworkDataSize(NetworkDataType.developer, 306), // check that this works
+        new NetworkDataSize(NetworkDataType.developer, 346), // check that this works
         new NetworkDataSize(NetworkDataType.message, 0)
     };
 }

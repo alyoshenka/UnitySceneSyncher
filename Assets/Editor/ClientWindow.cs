@@ -23,6 +23,7 @@ public class ClientWindow : EditorWindow
     string buttonMsg = "Connect";
 
     bool connected = false;
+    bool sendWithInspectorUpdate = false;
 
     static Client client;
     static Thread clientThread;
@@ -72,8 +73,10 @@ public class ClientWindow : EditorWindow
 
         if (GUILayout.Button(new GUIContent("Push Transform")))
         {
-            client.PushTransform();
+            client.SendData();
         }
+
+        sendWithInspectorUpdate = EditorGUILayout.Toggle("Update With Inspector?", sendWithInspectorUpdate);
     }
 
     private void OnDestroy()
@@ -85,6 +88,6 @@ public class ClientWindow : EditorWindow
 
     private void OnInspectorUpdate()
     {
-        // client?.PushTransform();
+        if (sendWithInspectorUpdate) { client?.SendData(); }
     }
 }

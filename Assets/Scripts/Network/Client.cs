@@ -50,7 +50,6 @@ public class Client
 
         Debug.Log("client started");
 
-
         // move to serparate function
         listener.NetworkReceiveEvent += (fromPeer, dataReader, deliveryMethod) =>
         {
@@ -83,20 +82,31 @@ public class Client
         client.Stop();
     }
 
-    // send transform data to server
-    public void PushTransform()
+    /// <summary>
+    /// set current data
+    /// </summary>
+    void SetData()
     {
         developer.SetPosition(SceneView.lastActiveSceneView.camera.transform.position);
         developer.SetRotation(SceneView.lastActiveSceneView.camera.transform.rotation);
+        developer.SetCurrentTab(EditorWindow.focusedWindow.titleContent.text);
+    }
+
+    /// <summary>
+    /// send the data across the network
+    /// </summary>
+    public void SendData()
+    {
+        SetData();
 
         BinaryFormatter bf = new BinaryFormatter();
         MemoryStream ms = new MemoryStream();
         bf.Serialize(ms, developer);
-        byte[] transform = ms.ToArray();
+        byte[] data = ms.ToArray();
 
         Debug.Log(developer.DisplayString());
 
-        server.Send(transform, DeliveryMethod.ReliableOrdered);
-        Debug.Log(transform.Length + " sent");
+        server.Send(data, DeliveryMethod.ReliableOrdered);
+        Debug.Log(data.Length + " sent");
     }
 }

@@ -27,15 +27,15 @@ namespace Server
         int maxPeersCount;
         bool shouldRun;
 
-        Developer[] devs;
+        Developer[] developers;
 
         public Server()
         {
             shouldRun = true;
             maxPeersCount = 10;
 
-            devs = new Developer[maxPeersCount];
-            for(int i = 0; i < maxPeersCount; i++) { devs[i] = null; }
+            developers = new Developer[maxPeersCount];
+            for(int i = 0; i < maxPeersCount; i++) { developers[i] = null; }
 
             port = 9050;
             connectionKey = "SomeConnectionKey";
@@ -71,7 +71,7 @@ namespace Server
 
             listener.PeerDisconnectedEvent += (peer, disconnectInfo) =>
             {
-                Console.WriteLine(devs[peer.Id].GetName() + " disconnected with: " + disconnectInfo.Reason.ToString());
+                // Console.WriteLine(devs[peer.Id].GetName() + " disconnected with: " + disconnectInfo.Reason.ToString());
 
                 // check how peer array reacts
             };
@@ -83,21 +83,19 @@ namespace Server
                 Console.WriteLine("data recieved");
                 try
                 {
-                    Debug.Assert(null == devs[1]);
                     Console.Clear();
                     // Console.WriteLine("decoding " + NetworkDataSize.array[0].size + " bytes");
-                    byte[] data = new byte[NetworkDataSize.array[0].size];
-                    reader.GetBytes(data, 0, NetworkDataSize.array[0].size);
+
+                    byte[] data = new byte[reader.AvailableBytes];
+                    reader.GetBytes(data, 0, reader.AvailableBytes);
 
                     BinaryFormatter bf = new BinaryFormatter();
                     bf.Binder = new DeserializationBinder();
                     MemoryStream ms = new MemoryStream(data);
                     Developer dev = (Developer)bf.Deserialize(ms);
 
-                    devs[peer.Id] = dev;
+                    developers[peer.Id] = dev;
                     Console.WriteLine("peer id: " + peer.Id);
-
-                    Debug.Assert(null == devs[1]);
 
                     DisplayAllConnections();
                 }
@@ -129,7 +127,7 @@ namespace Server
         public void DisplayAllConnections()
         {
             Console.WriteLine("Connections: " + server.PeersCount);
-            foreach(Developer dev in devs)
+            foreach(Developer dev in developers)
             {
                 Console.WriteLine(dev?.DisplayString());
             }

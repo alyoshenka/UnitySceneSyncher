@@ -11,11 +11,12 @@ public class Developer
     public static int maxNameSize = 20;
 
     char[] displayName;
+
     Vector3_S position;
     Quaternion_S rotation;
+    char[] currentTab;
 
     private Developer() { }
-
 
     public Developer(string name)
     {
@@ -24,8 +25,6 @@ public class Developer
 
         displayName = new char[maxNameSize];
         displayName = name.ToCharArray(0, Mathf.Min(name.Length, maxNameSize));
-
-        // GameObject boop = new GameObject("boop");
     }
 
     #region Get/Setters
@@ -42,6 +41,10 @@ public class Developer
 
     public string GetName() { return new string(displayName); }
 
+    public void SetCurrentTab(string tab) { currentTab = tab.ToCharArray(0, Mathf.Min(tab.Length, maxNameSize)); }
+
+    public string GetCurrentTab() { return new string (currentTab); }
+
     #endregion
 
     public string DisplayString()
@@ -49,6 +52,7 @@ public class Developer
         string s = "Name: " + GetName() + "\n";
         s += "Pos: " + GetPosition() + "\n";
         s += "Rot: " + GetRotation() + "\n";
+        s += "Win: " + GetCurrentTab() + "\n";
         return s;
     }
 }
