@@ -19,7 +19,12 @@ public class Client
     NetManager client;
     NetPeer server = null;
 
-    Developer developer;
+    Developer myDeveloper;
+
+    const int maxPeersCount = 10; // way to synch
+    Developer[] allDevelopers;
+
+    public DevDisplay display;
 
     string hostIP;
     int port;
@@ -40,7 +45,7 @@ public class Client
         listener = new EventBasedNetListener();
         client = new NetManager(listener);
 
-        developer = new Developer(devName);
+        myDeveloper = new Developer(devName);
     }
 
     public void Start()
@@ -61,6 +66,9 @@ public class Client
                 server = fromPeer;
                 Debug.Log("server initialized");
             }
+
+            // recieve all dev data here
+            //      if correct send type
         };
     }
 
@@ -87,9 +95,9 @@ public class Client
     /// </summary>
     void SetData()
     {
-        developer.SetPosition(SceneView.lastActiveSceneView.camera.transform.position);
-        developer.SetRotation(SceneView.lastActiveSceneView.camera.transform.rotation);
-        developer.SetCurrentTab(EditorWindow.focusedWindow.titleContent.text);
+        myDeveloper.SetPosition(SceneView.lastActiveSceneView.camera.transform.position);
+        myDeveloper.SetRotation(SceneView.lastActiveSceneView.camera.transform.rotation);
+        myDeveloper.SetCurrentTab(EditorWindow.focusedWindow.titleContent.text);
     }
 
     /// <summary>
@@ -97,14 +105,16 @@ public class Client
     /// </summary>
     public void SendData()
     {
+        Debug.Assert(null != server); // init server in construction
+
         SetData();
 
         BinaryFormatter bf = new BinaryFormatter();
         MemoryStream ms = new MemoryStream();
-        bf.Serialize(ms, developer);
+        bf.Serialize(ms, myDeveloper);
         byte[] data = ms.ToArray();
 
-        Debug.Log(developer.DisplayString());
+        Debug.Log(myDeveloper.DisplayString());
 
         server.Send(data, DeliveryMethod.ReliableOrdered);
         Debug.Log(data.Length + " sent");

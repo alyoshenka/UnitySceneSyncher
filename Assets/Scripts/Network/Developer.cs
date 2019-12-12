@@ -6,7 +6,7 @@ using UnityEditor;
 
 [System.Serializable]
 [StructLayout(LayoutKind.Sequential)]
-public class Developer
+class Developer
 {
     public static int maxNameSize = 20;
 
@@ -57,4 +57,10 @@ public class Developer
         s += "Win: " + GetCurrentTab() + "\n";
         return s;
     }
+}
+
+struct ArrayDeveloper
+{
+    int index;
+    Developer dev;
 }

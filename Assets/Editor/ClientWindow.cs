@@ -77,6 +77,14 @@ public class ClientWindow : EditorWindow
         }
 
         sendWithInspectorUpdate = EditorGUILayout.Toggle("Update With Inspector?", sendWithInspectorUpdate);
+
+        if(GUILayout.Button(new GUIContent("Display Devs in Scene")))
+        {
+            GameObject go = new GameObject("DevDisplay");
+            go.AddComponent<DevDisplay>();
+            client.display = go.GetComponent<DevDisplay>();
+            Debug.Assert(null != client.display);
+        }
     }
 
     private void OnDestroy()

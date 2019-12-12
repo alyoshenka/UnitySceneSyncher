@@ -71,7 +71,8 @@ namespace Server
 
             listener.PeerDisconnectedEvent += (peer, disconnectInfo) =>
             {
-                // Console.WriteLine(devs[peer.Id].GetName() + " disconnected with: " + disconnectInfo.Reason.ToString());
+                Console.WriteLine(developers[peer.Id].GetName() + " disconnected with: " + disconnectInfo.Reason.ToString());
+                developers[peer.Id] = null;
 
                 // check how peer array reacts
             };
