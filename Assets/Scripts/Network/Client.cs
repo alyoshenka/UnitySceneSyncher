@@ -29,18 +29,18 @@ public class Client
 
     private Client() { }
 
-    public Client(string name)
+    public Client(string devName, string ip)
     {
         shouldRun = true;
 
-        hostIP = "localhost";
+        hostIP = ip;
         port = 9050;
         connectionKey = "SomeConnectionKey";
 
         listener = new EventBasedNetListener();
         client = new NetManager(listener);
 
-        developer = new Developer(name);
+        developer = new Developer(devName);
     }
 
     public void Start()
