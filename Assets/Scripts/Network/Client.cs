@@ -19,7 +19,7 @@ public class Client : Network.NetworkConnection
     NetManager client;
     NetPeer server = null;
 
-    Developer myDeveloper;
+    Network.Developer myDeveloper;
 
     public DevDisplay display;
 
@@ -40,7 +40,7 @@ public class Client : Network.NetworkConnection
         listener = new EventBasedNetListener();
         client = new NetManager(listener);
 
-        myDeveloper = new Developer(devName);
+        myDeveloper = new Network.Developer(devName);
     }
 
     public override void Start()

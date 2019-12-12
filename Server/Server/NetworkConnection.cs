@@ -1,6 +1,6 @@
 ﻿using LiteNetLib;
 
-namespace Server
+namespace Network
 {
     public abstract class NetworkConnection
     {

@@ -5,7 +5,7 @@ using System.Text;
 using System.Runtime.Serialization;
 using System.Reflection;
 
-namespace Server
+namespace Network
 {
     // https://stackoverflow.com/questions/5170333/binaryformatter-deserialize-unable-to-find-assembly-after-ilmerge
 

@@ -19,7 +19,7 @@ using System.Diagnostics;
 
 namespace Network
 {
-    public class Server : Network.NetworkConnection
+    public class Server : NetworkConnection
     {
         NetManager server;
 
@@ -57,6 +57,7 @@ namespace Network
 
             listener.PeerConnectedEvent += peer =>
             {
+                /*
                 Console.WriteLine("test push");
 
                 BinaryFormatter bf = new BinaryFormatter();
@@ -66,7 +67,7 @@ namespace Network
                 Console.WriteLine("Len: " + data.Length);
                 peer.Send(data, DeliveryMethod.ReliableOrdered);
                 return;
-
+                */
 
                 Console.WriteLine("We got connection: " + peer.EndPoint); // Show peer ip
                 NetDataWriter writer = new NetDataWriter();                 // Create writer class

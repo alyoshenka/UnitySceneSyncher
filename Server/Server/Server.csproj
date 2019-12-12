@@ -3,7 +3,14 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.1</TargetFramework>
+    <RootNamespace>Network</RootNamespace>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\Assets\Scripts\Network\Developer.cs" Link="Developer.cs" />
+    <Compile Include="..\..\Assets\Scripts\Network\NetworkData.cs" Link="NetworkData.cs" />
+    <Compile Include="..\..\Assets\Scripts\Network\Server.cs" Link="Server.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <Reference Include="LiteNetLib">

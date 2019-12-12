@@ -65,8 +65,8 @@ public class ClientWindow : EditorWindow
 
                 Debug.Log("disconnected from " + serverAddress);
 
-                client.Stop();
-                clientThread.Join();
+                client?.Stop();
+                clientThread?.Join();
             }
         }
 
