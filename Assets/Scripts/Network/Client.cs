@@ -14,7 +14,7 @@ using System.IO;
 /// <summary>
 /// Client network connection
 /// </summary>
-public class Client : Server.NetworkConnection
+public class Client : Network.NetworkConnection
 {
     NetManager client;
     NetPeer server = null;
@@ -53,10 +53,12 @@ public class Client : Server.NetworkConnection
         // move to serparate function
         listener.NetworkReceiveEvent += (fromPeer, dataReader, deliveryMethod) =>
         {
+            /*
             byte[] type = new byte[1];
             dataReader.GetBytes(type, 1);
             Debug.Log("got: " + type[0]);
             return;
+            */
 
             Debug.Log("We got: " + dataReader.GetString(100 /* max length of string */));
             dataReader.Recycle();

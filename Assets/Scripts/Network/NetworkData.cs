@@ -7,37 +7,19 @@ using System.Runtime.InteropServices;
 /// <summary>
 /// type of data sent across the network
 /// </summary>
-public enum NetworkDataType
+public enum DataRecieveType : byte
 {
     // something something about these being bitwise
     // so i can say which bit of info i am sending
 
 
-    developer, // full developer data
-    message // developer message (string)
+    developerAdd,       // add a new developer connection
+    developerUpdate,    // update an existing developer connection
+    developerMessage,   // send a developer message
+    
+    test
 }
 
-/// <summary>
-/// used to determine the number of bytes to read
-/// from the recieved data
-/// </summary>
-public struct NetworkDataSize
-{
-    public NetworkDataType type;
-    public int size;
-
-    public NetworkDataSize(NetworkDataType _type, int _size)
-    {
-        type = _type;
-        size = _size;
-    }
-
-    public static NetworkDataSize[] array = new NetworkDataSize[]
-    {
-        new NetworkDataSize(NetworkDataType.developer, 307), // check that this works
-        new NetworkDataSize(NetworkDataType.message, 0)
-    };
-}
 
 #region Serializable Structs
 

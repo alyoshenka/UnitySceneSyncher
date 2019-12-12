@@ -17,7 +17,7 @@ public class ServerWindow : EditorWindow
 
     bool serverRunning { get => null == server; }
 
-    static Server.Server server = null;
+    static Network.Server server = null;
     static Thread serverThread;
 
     [MenuItem("Window/UnitySceneSyncher/ServerWindow")]
@@ -43,7 +43,7 @@ public class ServerWindow : EditorWindow
                 buttonMsg = "Stop Server";
 
 
-                server = new Server();
+                server = new Network.Server();
                 server.Start();
                 serverThread = new Thread(server.Run);
                 serverThread.Start();
