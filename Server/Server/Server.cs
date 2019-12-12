@@ -12,27 +12,25 @@ using System.Diagnostics;
 // need initial push on connection
 //      need to send name/id data right after connection to connect name/id to peer
 
+// make sure everything is closed/disconnected correctly
+
+// only send info when it changes
+//      different update rates for different windows?
+
 namespace Server
 {
-    class Server
+    class Server : NetworkConnection
     {
-        EventBasedNetListener listener;
         NetManager server;
 
         // TODO: file io or gui for settings
 
-        int port;
-        string connectionKey;
-
-        int maxPeersCount;
+        const int maxPeersCount = 10;
         bool shouldRun;
-
-        Developer[] developers;
 
         public Server()
         {
             shouldRun = true;
-            maxPeersCount = 10;
 
             developers = new Developer[maxPeersCount];
             for(int i = 0; i < maxPeersCount; i++) { developers[i] = null; }
@@ -44,7 +42,7 @@ namespace Server
             server = new NetManager(listener);
         }
 
-        public void Start()
+        public override void Start()
         {
             server.Start(port);
 
@@ -59,6 +57,17 @@ namespace Server
 
             listener.PeerConnectedEvent += peer =>
             {
+                Console.WriteLine("test push");
+
+                BinaryFormatter bf = new BinaryFormatter();
+                MemoryStream ms = new MemoryStream();
+                bf.Serialize(ms, DataRecieveType.developerAdd);
+                byte[] data = ms.ToArray();
+                Console.WriteLine("Len: " + data.Length);
+                peer.Send(data, DeliveryMethod.ReliableOrdered);
+                return;
+
+
                 Console.WriteLine("We got connection: " + peer.EndPoint); // Show peer ip
                 NetDataWriter writer = new NetDataWriter();                 // Create writer class
                 writer.Put("Hello client!");                                // Put some string
@@ -108,7 +117,7 @@ namespace Server
 
         }
 
-        public void Run()
+        public override void Run()
         {
             while (shouldRun)
             {
@@ -125,18 +134,20 @@ namespace Server
             server.Stop();
         }
 
+        public override void Stop()
+        {
+            shouldRun = false;
+
+            server.Stop();
+        }
+
         public void DisplayAllConnections()
         {
             Console.WriteLine("Connections: " + server.PeersCount);
-            foreach(Developer dev in developers)
+            foreach (Developer dev in developers)
             {
                 Console.WriteLine(dev?.DisplayString());
             }
-        }
-
-        public void Stop()
-        {
-            shouldRun = false;
         }
     }
 }

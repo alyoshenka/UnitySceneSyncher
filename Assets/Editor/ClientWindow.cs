@@ -12,28 +12,27 @@ using System.Threading;
 /// </summary>
 public class ClientWindow : EditorWindow
 {
+    static string connectedMsg = "connected to server";
+    static string disconnectedMsg = "waiting to connect";
+    static string connectMsg = "Connect";
+    static string disconnectMsg = "Disconnect";
+
     string serverAddress = "localhost";
-
-    string connectedMsg = "connected to server";
-    string disconnectedMsg = "waiting to connect";
-    string connectMsg = "Connect";
-    string disconnectMsg = "Disconnect";
     string devName = "your_name_here";
-
     string buttonMsg = "Connect";
 
     bool connected = false;
     bool sendWithInspectorUpdate = false;
 
-    static Client client;
-    static Thread clientThread;
+    Client client;
+    Thread clientThread;
 
     static int i;
 
     [MenuItem("Window/UnitySceneSyncher/ClientWindow")]
     static void Init()
     {
-        ClientWindow win = (ClientWindow)GetWindow(typeof(ClientWindow));
+        ClientWindow win = CreateInstance<ClientWindow>(); // allows mutliple
         win.Show();
 
         i = 0;
@@ -53,7 +52,7 @@ public class ClientWindow : EditorWindow
             {
                 buttonMsg = disconnectMsg;
 
-                Debug.Log("connected to server as " + devName + " at " + serverAddress);
+                Debug.Log("Connected to " + serverAddress + " as " + devName);
 
                 client = new Client(devName, serverAddress);
                 client.Start();
@@ -92,6 +91,8 @@ public class ClientWindow : EditorWindow
         Debug.Log("window closed");
 
         // disconnect
+
+        client.Stop();
     }
 
     private void OnInspectorUpdate()

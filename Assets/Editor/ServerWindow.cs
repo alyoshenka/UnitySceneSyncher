@@ -17,7 +17,7 @@ public class ServerWindow : EditorWindow
 
     bool serverRunning { get => null == server; }
 
-    static Server server = null;
+    static Server.Server server = null;
     static Thread serverThread;
 
     [MenuItem("Window/UnitySceneSyncher/ServerWindow")]

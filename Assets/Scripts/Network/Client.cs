@@ -10,25 +10,20 @@ using UnityEditor;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 
+
 /// <summary>
 /// Client network connection
 /// </summary>
-public class Client
+public class Client : Server.NetworkConnection
 {
-    EventBasedNetListener listener;
     NetManager client;
     NetPeer server = null;
 
     Developer myDeveloper;
 
-    const int maxPeersCount = 10; // way to synch
-    Developer[] allDevelopers;
-
     public DevDisplay display;
 
     string hostIP;
-    int port;
-    string connectionKey;
 
     bool shouldRun;
 
@@ -48,23 +43,28 @@ public class Client
         myDeveloper = new Developer(devName);
     }
 
-    public void Start()
+    public override void Start()
     {
         client.Start();
         client.Connect(hostIP, port, connectionKey);
 
-        Debug.Log("client started");
+        Debug.Log("Client started");
 
         // move to serparate function
         listener.NetworkReceiveEvent += (fromPeer, dataReader, deliveryMethod) =>
         {
+            byte[] type = new byte[1];
+            dataReader.GetBytes(type, 1);
+            Debug.Log("got: " + type[0]);
+            return;
+
             Debug.Log("We got: " + dataReader.GetString(100 /* max length of string */));
             dataReader.Recycle();
 
             if(null == server)
             {
                 server = fromPeer;
-                Debug.Log("server initialized");
+                Debug.Log("Server initialized");
             }
 
             // recieve all dev data here
@@ -72,22 +72,20 @@ public class Client
         };
     }
 
-    public void Stop()
+    public override void Stop()
     {
         shouldRun = false;
+
+        client.Stop(); // bad ordering?
     }
 
-    public void Run()
+    public override void Run()
     {
-        Debug.Log("run client");
-
         while (shouldRun)
         {
             client.PollEvents();
             Thread.Sleep(15);
         }
-
-        client.Stop();
     }
 
     /// <summary>
@@ -114,9 +112,6 @@ public class Client
         bf.Serialize(ms, myDeveloper);
         byte[] data = ms.ToArray();
 
-        Debug.Log(myDeveloper.DisplayString());
-
         server.Send(data, DeliveryMethod.ReliableOrdered);
-        Debug.Log(data.Length + " sent");
     }
 }

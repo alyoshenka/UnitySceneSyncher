@@ -6,7 +6,7 @@ using UnityEditor;
 
 [System.Serializable]
 [StructLayout(LayoutKind.Sequential)]
-class Developer
+public class Developer
 {
     public static int maxNameSize = 20;
 
