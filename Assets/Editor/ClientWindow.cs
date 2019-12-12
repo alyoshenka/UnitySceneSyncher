@@ -54,7 +54,7 @@ public class ClientWindow : EditorWindow
 
                 Debug.Log("connected to server as " + devName + " at " + serverAddress);
 
-                client = new Client(devName);
+                client = new Client(devName, serverAddress);
                 client.Start();
                 clientThread = new Thread(client.Run);
                 clientThread.Start();
