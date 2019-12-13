@@ -15,5 +15,6 @@ namespace Network
         public abstract void Start();
         public abstract void Run();
         public abstract void Stop();
+        public abstract void DealWithRecievedData(NetworkData rec, NetPeer sender);
     }
 }

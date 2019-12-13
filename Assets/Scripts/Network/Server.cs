@@ -9,6 +9,7 @@ using System.IO;
 
 using System.Diagnostics;
 
+
 // need initial push on connection
 //      need to send name/id data right after connection to connect name/id to peer
 
@@ -24,16 +25,14 @@ namespace Network
         NetManager server;
 
         // TODO: file io or gui for settings
-
-        const int maxPeersCount = 10;
         bool shouldRun;
 
         public Server()
         {
             shouldRun = true;
 
-            developers = new Developer[maxPeersCount];
-            for(int i = 0; i < maxPeersCount; i++) { developers[i] = null; }
+            developers = new Developer[maxPeerCount];
+            for(int i = 0; i < maxPeerCount; i++) { developers[i] = null; }
 
             port = 9050;
             connectionKey = "SomeConnectionKey";
@@ -46,76 +45,12 @@ namespace Network
         {
             server.Start(port);
 
-            Console.WriteLine("server started");
+            Console.WriteLine("Server started");
 
-            // move to separate functions
-            listener.ConnectionRequestEvent += request =>
-            {
-                if (server.PeersCount < maxPeersCount) { request.AcceptIfKey(connectionKey); }
-                else { request.Reject(); }
-            };
-
-            listener.PeerConnectedEvent += peer =>
-            {
-                /*
-                Console.WriteLine("test push");
-
-                BinaryFormatter bf = new BinaryFormatter();
-                MemoryStream ms = new MemoryStream();
-                bf.Serialize(ms, DataRecieveType.developerAdd);
-                byte[] data = ms.ToArray();
-                Console.WriteLine("Len: " + data.Length);
-                peer.Send(data, DeliveryMethod.ReliableOrdered);
-                return;
-                */
-
-                Console.WriteLine("We got connection: " + peer.EndPoint); // Show peer ip
-                NetDataWriter writer = new NetDataWriter();                 // Create writer class
-                writer.Put("Hello client!");                                // Put some string
-                peer.Send(writer, DeliveryMethod.ReliableOrdered);             // Send with reliability
-
-                // setup should happen here
-
-                // Console.WriteLine("new dev: " + devs[server.PeersCount].GetName());
-            };
-
-            listener.PeerDisconnectedEvent += (peer, disconnectInfo) =>
-            {
-                Console.WriteLine(developers[peer.Id].GetName() + " disconnected with: " + disconnectInfo.Reason.ToString());
-                developers[peer.Id] = null;
-
-                // check how peer array reacts
-            };
-
-
-            listener.NetworkReceiveEvent += (peer, reader, deliveryMethod) =>
-            {
-                // get type of data
-                Console.WriteLine("data recieved");
-                try
-                {
-                    Console.Clear();
-                    // Console.WriteLine("decoding " + NetworkDataSize.array[0].size + " bytes");
-
-                    byte[] data = new byte[reader.AvailableBytes];
-                    reader.GetBytes(data, 0, reader.AvailableBytes);
-
-                    BinaryFormatter bf = new BinaryFormatter();
-                    bf.Binder = new DeserializationBinder();
-                    MemoryStream ms = new MemoryStream(data);
-                    Developer dev = (Developer)bf.Deserialize(ms);
-
-                    developers[peer.Id] = dev;
-                    Console.WriteLine("peer id: " + peer.Id);
-
-                    DisplayAllConnections();
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                }
-            };
-
+            listener.ConnectionRequestEvent += ConnectionRequest;
+            listener.PeerConnectedEvent += PeerConnected;
+            listener.PeerDisconnectedEvent += PeerDisconnected;
+            listener.NetworkReceiveEvent += NetworkRecieve;
         }
 
         public override void Run()
@@ -140,6 +75,92 @@ namespace Network
             shouldRun = false;
 
             server.Stop();
+        }
+
+        #region Events
+
+        public void ConnectionRequest(ConnectionRequest request)
+        {
+            Console.WriteLine("Recieved connection request from: " + request);
+            if (server.PeersCount < maxPeerCount)
+            {
+                request.AcceptIfKey(connectionKey);
+                Console.WriteLine("Accepted request: " + (maxPeerCount - server.PeersCount) + " open connections");
+            }
+            else
+            {
+                request.Reject();
+                Console.WriteLine("Denied request: server full");
+            }
+        }
+
+        public void PeerConnected(NetPeer peer)
+        {
+            NetworkData sendData = new NetworkData
+            {
+                type = DataRecieveType.serverInitialize,
+                other = "Welcome!"
+            };
+
+            BinaryFormatter bf = new BinaryFormatter();
+            MemoryStream ms = new MemoryStream();
+            bf.Serialize(ms, sendData);
+            byte[] data = ms.ToArray();
+            Console.WriteLine("Connection from: " + peer.EndPoint);
+            peer.Send(data, DeliveryMethod.ReliableOrdered);
+        }
+
+        public void PeerDisconnected(NetPeer peer, DisconnectInfo disconnectInfo)
+        {
+            Console.WriteLine(developers[peer.Id]?.GetName() + " disconnected with: " + disconnectInfo.Reason.ToString());
+            developers[peer.Id] = null;
+
+            // check how peer array reacts
+        }
+
+        public void NetworkRecieve(NetPeer peer, NetPacketReader reader, DeliveryMethod deliveryMethod)
+        {
+            try
+            {
+                byte[] data = reader.GetRemainingBytes();
+
+                BinaryFormatter bf = new BinaryFormatter();
+                bf.Binder = new DeserializationBinder();
+                MemoryStream ms = new MemoryStream(data);
+                NetworkData rec = (NetworkData)bf.Deserialize(ms);
+
+                Console.WriteLine("Recieved data of type: " + rec.type);
+                DealWithRecievedData(rec, peer);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error:\n" + e);
+            }
+        }
+
+        #endregion
+
+        public override void DealWithRecievedData(NetworkData rec, NetPeer sender)
+        {
+            switch (rec.type)
+            {
+                case DataRecieveType.developerAdd:
+                    Developer newDev = (Developer)rec.other;
+                    Console.WriteLine("Added new developer: " + newDev.GetName());
+                    developers[sender.Id] = newDev;
+                    break;
+                case DataRecieveType.developerUpdate:
+                    Developer updateDev = (Developer)rec.other;
+                    developers[sender.Id] = updateDev;
+                    Console.WriteLine(updateDev.DisplayString());
+                    break;
+                case DataRecieveType.developerMessage:
+                    Console.WriteLine(developers[sender.Id]?.GetName() + " said: " + (string)rec.other);
+                    break;
+                default:
+                    Debug.Assert(false);
+                    break;
+            }
         }
 
         public void DisplayAllConnections()

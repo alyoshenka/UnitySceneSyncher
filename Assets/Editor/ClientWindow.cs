@@ -20,6 +20,7 @@ public class ClientWindow : EditorWindow
     string serverAddress = "localhost";
     string devName = "your_name_here";
     string buttonMsg = "Connect";
+    string messageMsg = "your_message_here";
 
     bool connected = false;
     bool sendWithInspectorUpdate = false;
@@ -72,7 +73,7 @@ public class ClientWindow : EditorWindow
 
         if (GUILayout.Button(new GUIContent("Push Transform")))
         {
-            client.SendData();
+            client?.SendData();
         }
 
         sendWithInspectorUpdate = EditorGUILayout.Toggle("Update With Inspector?", sendWithInspectorUpdate);
@@ -83,6 +84,12 @@ public class ClientWindow : EditorWindow
             go.AddComponent<DevDisplay>();
             client.display = go.GetComponent<DevDisplay>();
             Debug.Assert(null != client.display);
+        }
+
+        messageMsg = EditorGUILayout.TextField("Send a message", messageMsg);
+        if(GUILayout.Button(new GUIContent("Send")))
+        {
+            client.SendMessage(messageMsg);
         }
     }
 

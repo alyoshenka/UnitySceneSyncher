@@ -14,17 +14,19 @@ namespace Network
         public static int maxNameSize = 20;
 
         char[] displayName;
+        float4_S displayColor;
 
-        Vector3_S position;
-        Quaternion_S rotation;
+        float3_S position;
+        float4_S rotation;
         char[] currentTab;
 
         private Developer() { }
 
         public Developer(string name)
         {
-            position = new Vector3_S(Vector3.zero);
-            rotation = new Quaternion_S(Quaternion.identity);
+            position = new float3_S(Vector3.zero);
+            rotation = new float4_S(Quaternion.identity);
+            displayColor = new float4_S(Color.black);
 
             displayName = new char[maxNameSize];
             displayName = name.ToCharArray(0, Mathf.Min(name.Length, maxNameSize));
@@ -32,11 +34,11 @@ namespace Network
 
         #region Get/Setters
 
-        public void SetPosition(Vector3 pos) { position = new Vector3_S(pos); }
+        public void SetPosition(Vector3 pos) { position = new float3_S(pos); }
 
         public Vector3 GetPosition() { return position.ToVector3(); }
 
-        public void SetRotation(Quaternion rot) { rotation = new Quaternion_S(rot); }
+        public void SetRotation(Quaternion rot) { rotation = new float4_S(rot); }
 
         public Quaternion GetRotation() { return rotation.ToQuaternion(); }
 
@@ -47,6 +49,10 @@ namespace Network
         public void SetCurrentTab(string tab) { currentTab = tab.ToCharArray(0, Mathf.Min(tab.Length, maxNameSize)); }
 
         public string GetCurrentTab() { return new string(currentTab); }
+
+        public void SetDisplayColor(Color col) { displayColor = new float4_S(col); }
+
+        public Color GetDisplayColor() { return displayColor.ToColor(); }
 
         #endregion
 

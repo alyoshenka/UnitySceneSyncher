@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
+﻿using UnityEngine;
 using System.Runtime.InteropServices;
 
 namespace Network
@@ -20,18 +17,25 @@ namespace Network
         developerUpdate,    // update an existing developer connection
         developerMessage,   // send a developer message
 
-        test
+        serverInitialize    // initialize server connection
     }
-
+    
+    [System.Serializable]
+    [StructLayout(LayoutKind.Sequential)]
+    public struct NetworkData
+    {
+        public DataRecieveType type;
+        public object other;
+    }
 
     #region Serializable Structs
 
     [System.Serializable]
-    public struct Vector3_S
+    public struct float3_S
     {
         public float x, y, z;
 
-        public Vector3_S(Vector3 orig)
+        public float3_S(Vector3 orig)
         {
             x = orig.x;
             y = orig.y;
@@ -45,11 +49,11 @@ namespace Network
     }
 
     [System.Serializable]
-    public struct Quaternion_S
+    public struct float4_S
     {
         public float x, y, z, w;
 
-        public Quaternion_S(Quaternion orig)
+        public float4_S(Quaternion orig)
         {
             x = orig.x;
             y = orig.y;
@@ -57,9 +61,22 @@ namespace Network
             w = orig.w;
         }
 
+        public float4_S(Color orig)
+        {
+            x = orig.r;
+            y = orig.g;
+            z = orig.b;
+            w = orig.a;
+        }
+
         public Quaternion ToQuaternion()
         {
             return new Quaternion(x, y, z, w);
+        }
+
+        public Color ToColor()
+        {
+            return new Color(x, y, z, w);
         }
     }
 
