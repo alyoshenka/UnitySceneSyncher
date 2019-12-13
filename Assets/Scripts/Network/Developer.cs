@@ -1,17 +1,14 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using System.Runtime.InteropServices;
 using UnityEditor;
 
 namespace Network
 {
-
     [System.Serializable]
     [StructLayout(LayoutKind.Sequential)]
     public class Developer
     {
-        public static int maxNameSize = 20;
+        public static int maxNameSize = 20; // maximum string size
 
         char[] displayName;
         float4_S displayColor;
@@ -19,6 +16,7 @@ namespace Network
         float3_S position;
         float4_S rotation;
         char[] currentTab;
+        int selectedGOID; // id of selected GameObject;
 
         private Developer() { }
 
@@ -54,14 +52,22 @@ namespace Network
 
         public Color GetDisplayColor() { return displayColor.ToColor(); }
 
+        public void SetSelectedGameObject(GameObject go) { selectedGOID = null == go ? 0 : go.GetInstanceID(); }
+
+        public void SetSelectedGameObjectID(int id) { selectedGOID = id; }
+
+        public int GetSelectedGameObjectIndex() { return selectedGOID; }
+
         #endregion
 
-        public string DisplayString()
+        public string DisplayString() // bool verbose
         {
             string s = "Name: " + GetName() + "\n";
             s += "Pos: " + GetPosition() + "\n";
             s += "Rot: " + GetRotation() + "\n";
             s += "Win: " + GetCurrentTab() + "\n";
+            s += "Col: " + GetDisplayColor() + "\n";
+            s += "Obj: " + GetSelectedGameObjectIndex();
             return s;
         }
     }

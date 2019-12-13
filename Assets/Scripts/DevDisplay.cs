@@ -2,24 +2,30 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// displays dev data in the current scene
+/// </summary>
 public class DevDisplay : MonoBehaviour
 {
-    public Client client;
+    public int devDisplaySize = 2; // make editor
+    public Client client { get; set; }
+
+    public void CheckForClient()
+    {
+        if (null == client) { Debug.LogWarning("Cannot find list of devs"); }
+    }
 
     private void OnDrawGizmos()
     {
-        if(null == client)
+        if(null != client)
         {
-            Debug.LogWarning("Cannot find list of devs");
-            return;
-        }
+            foreach (Network.Developer dev in client.developers)
+            {
+                if (null == dev) { continue; }
 
-        Gizmos.color = new Color(222, 0, 255);
-        foreach (Network.Developer dev in client.developers)
-        {
-            if(null == dev) { continue; }
-
-            Gizmos.DrawSphere(dev.GetPosition(), 5);
+                Gizmos.color = dev.GetDisplayColor();
+                Gizmos.DrawSphere(dev.GetPosition(), devDisplaySize);
+            }
         }
     }
 }

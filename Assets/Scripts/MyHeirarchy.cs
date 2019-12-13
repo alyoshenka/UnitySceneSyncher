@@ -1,19 +1,24 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEditor;
+
+using System.Collections;
+using System.Collections.Generic;
 
 // https://unity3d.college/2017/09/04/customizing-hierarchy-bold-prefab-text/
 
-[InitializeOnLoad]
+/// <summary>
+/// shows interactions between other devs and hierarchy
+/// </summary>
+[ExecuteAlways]
 public class MyHeirarchy : MonoBehaviour
 {
     private static Vector2 offset = Vector2.up * 2;
 
-    static MyHeirarchy()
-    {
-        EditorApplication.hierarchyWindowItemOnGUI += HandleHeirarchyWindowItemOnGUI;
-    }
+    public static Client client;
+
+    public void StartDisplaying() { EditorApplication.hierarchyWindowItemOnGUI += HandleHeirarchyWindowItemOnGUI; }
+
+    public void StopDisplaying() { EditorApplication.hierarchyWindowItemOnGUI -= HandleHeirarchyWindowItemOnGUI; }
 
     private static void HandleHeirarchyWindowItemOnGUI(int instanceID, Rect selectionRect)
     {
@@ -23,8 +28,21 @@ public class MyHeirarchy : MonoBehaviour
         var obj = EditorUtility.InstanceIDToObject(instanceID);
         if(null != obj)
         {
-            var prefabType = PrefabUtility.GetPrefabType(obj);
-            if(prefabType == PrefabType.PrefabInstance)
+            // slightly terrible
+            if(client != null)
+            {
+                foreach (Network.Developer dev in client.developers)
+                {
+                    if (dev != null && dev.GetSelectedGameObjectIndex() == instanceID)
+                    {
+                        backgroundColor = dev.GetDisplayColor();
+                        break;
+                    }
+                }
+            }
+
+            var prefabType = PrefabUtility.GetPrefabAssetType(obj);
+            if(prefabType == PrefabAssetType.Regular)
             {
                 fontColor = Color.white;
             }
@@ -38,4 +56,6 @@ public class MyHeirarchy : MonoBehaviour
             });
         }
     }
+
+    private void OnDestroy() { StopDisplaying(); }
 }

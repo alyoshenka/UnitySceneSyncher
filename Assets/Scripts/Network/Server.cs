@@ -145,58 +145,77 @@ namespace Network
             switch (rec.type)
             {
                 case DataRecieveType.developerAdd:
-                    Developer newDev = (Developer)rec.other;
-                    Console.WriteLine("Added new developer: " + newDev.GetName());
-                    developers[sender.Id] = newDev;
-
-                    // ok now this is actually terrible
-                    foreach(NetPeer peer in server.ConnectedPeerList)
-                    {
-                        BinaryFormatter bf = new BinaryFormatter();
-                        MemoryStream ms = new MemoryStream();
-
-                        NetworkData dat = new NetworkData
-                        {
-                            type = DataRecieveType.developerUpdate,
-                            other = developers[peer.Id]
-                        };
-                        bf.Serialize(ms, dat);
-                        byte[] data = ms.ToArray();
-
-                        sender.Send(data, DeliveryMethod.ReliableOrdered);
-                    }
+                    AddNewDeveloper(rec, sender.Id);
                     break;
                 case DataRecieveType.developerUpdate:
-                    Developer updateDev = (Developer)rec.other;
-                    developers[sender.Id] = updateDev;
-                    Console.WriteLine(updateDev.DisplayString());
-
-                    // put into a function
-                    // ok now this is actually terrible
-                    foreach (NetPeer peer in server.ConnectedPeerList)
-                    {
-                        BinaryFormatter bf = new BinaryFormatter();
-                        MemoryStream ms = new MemoryStream();
-
-                        NetworkData dat = new NetworkData
-                        {
-                            type = DataRecieveType.developerUpdate,
-                            other = developers[peer.Id]
-                        };
-                        bf.Serialize(ms, dat);
-                        byte[] data = ms.ToArray();
-
-                        sender.Send(data, DeliveryMethod.ReliableOrdered);
-                    }
+                    UpdateExistingDeveloper(rec, sender);
                     break;
                 case DataRecieveType.developerMessage:
-                    Console.WriteLine(developers[sender.Id]?.GetName() + " said: " + (string)rec.other);
+                    HandleDeveloperMessage(developers[sender.Id] == null ? "null" : developers[sender.Id].GetName(), (string)rec.other);
                     break;
                 default:
                     Debug.Assert(false);
                     break;
             }
         }
+
+        #region Data Reactions
+
+        void AddNewDeveloper(NetworkData rec, int id)
+        {
+            Developer newDev = (Developer)rec.other;
+            Console.WriteLine("Added new developer: " + newDev.GetName());
+            developers[id] = newDev;
+
+            // ok now this is actually terrible
+            foreach (NetPeer peer in server.ConnectedPeerList)
+            {
+                BinaryFormatter bf = new BinaryFormatter();
+                MemoryStream ms = new MemoryStream();
+
+                NetworkData dat = new NetworkData
+                {
+                    type = DataRecieveType.developerUpdate,
+                    other = developers[peer.Id]
+                };
+                bf.Serialize(ms, dat);
+                byte[] data = ms.ToArray();
+
+                peer.Send(data, DeliveryMethod.ReliableOrdered);
+            }
+        }
+
+        void UpdateExistingDeveloper(NetworkData rec, NetPeer sender)
+        {
+            Developer updateDev = (Developer)rec.other;
+            developers[sender.Id] = updateDev;
+            Console.WriteLine(updateDev.DisplayString());
+
+            // put into a function
+            // ok now this is actually terrible
+            foreach (NetPeer peer in server.ConnectedPeerList)
+            {
+                BinaryFormatter bf = new BinaryFormatter();
+                MemoryStream ms = new MemoryStream();
+
+                NetworkData dat = new NetworkData
+                {
+                    type = DataRecieveType.developerUpdate,
+                    other = developers[peer.Id]
+                };
+                bf.Serialize(ms, dat);
+                byte[] data = ms.ToArray();
+
+                sender.Send(data, DeliveryMethod.ReliableOrdered);
+            }
+        }
+
+        void HandleDeveloperMessage(string name, string msg)
+        {
+            Console.WriteLine(name + " said: " + msg);
+        }
+
+        #endregion
 
         public void DisplayAllConnections()
         {

@@ -19,10 +19,13 @@ public class Client : NetworkConnection
     NetManager client;
     NetPeer server = null;
 
-    Developer myDeveloper;
+    public Developer myDeveloper;
+    bool displayDebugMessages;
 
     string hostIP;
     bool shouldRun;
+
+    bool updatePending; // ???
 
     private Client() { }
 
@@ -47,7 +50,7 @@ public class Client : NetworkConnection
         client.Start();
         client.Connect(hostIP, port, connectionKey);
 
-        Debug.Log("Client started");
+        if (displayDebugMessages) { Debug.Log("Client started"); }
 
         listener.NetworkReceiveEvent += NetworkRecieve;
     }
@@ -78,6 +81,8 @@ public class Client : NetworkConnection
         myDeveloper.SetPosition(SceneView.lastActiveSceneView.camera.transform.position);
         myDeveloper.SetRotation(SceneView.lastActiveSceneView.camera.transform.rotation);
         myDeveloper.SetCurrentTab(EditorWindow.focusedWindow.titleContent.text);
+
+        myDeveloper.SetSelectedGameObject(Selection.activeGameObject);
     }
 
     /// <summary>
@@ -126,10 +131,6 @@ public class Client : NetworkConnection
 
     public void NetworkRecieve(NetPeer peer, NetPacketReader reader, DeliveryMethod deliveryMethod)
     {
-        ///////
-
-        Console.WriteLine(reader.AvailableBytes + " bytes remaining");
-
         byte[] data = new byte[reader.AvailableBytes];
         reader.GetBytes(data, 0, reader.AvailableBytes);
 
@@ -138,35 +139,50 @@ public class Client : NetworkConnection
         MemoryStream ms = new MemoryStream(data);
         NetworkData rec = (NetworkData)bf.Deserialize(ms);
 
-        Console.WriteLine("Recieved: " + rec.type);
+        if (displayDebugMessages) { Debug.Log("Recieved: " + rec.type); }
         DealWithRecievedData(rec, peer);
 
         reader.Recycle();
     }
+
+    #endregion
 
     public override void DealWithRecievedData(NetworkData rec, NetPeer sender)
     {
         switch (rec.type)
         {
             case DataRecieveType.developerAdd:
-                developers[sender.Id] = (Developer)rec.other;
+                AddNewDeveloper(rec, sender.Id);
                 break;
             case DataRecieveType.developerUpdate:
                 developers[sender.Id] = (Developer)rec.other;
                 break;
             case DataRecieveType.developerMessage:
-                Debug.Log((string)rec.other);
+                HandleDeveloperMessage(developers[sender.Id] == null ? developers[sender.Id].GetName() : "null", (string)rec.other);
                 break;
 
             case DataRecieveType.serverInitialize:
-                server = sender;
-                Debug.Log("Message from server: " + (string)rec.other);
-                SendInitialData(); // initialze server 
+                InitializeServer(rec, sender);
                 break;
             default:
                 Debug.Assert(false);
                 break;
         }
+    }
+
+    #region Data Reactions
+
+    void AddNewDeveloper(NetworkData rec, int id) { developers[id] = (Developer)rec.other; }
+
+    void UpdateExistingDeveloper(NetworkData rec, int id) { developers[id] = (Developer)rec.other; }
+
+    void HandleDeveloperMessage(string name, string msg) { Debug.Log(name + " said: " + msg); }
+
+    void InitializeServer(NetworkData rec, NetPeer sender)
+    {
+        server = sender;
+        if (displayDebugMessages) { Debug.Log("Message from server: " + (string)rec.other); }
+        SendInitialData(); // initialze server 
     }
 
     #endregion
@@ -186,4 +202,6 @@ public class Client : NetworkConnection
 
         server?.Send(data, DeliveryMethod.ReliableOrdered);
     }
+
+    public void DisplayDebugMessages(bool val) { displayDebugMessages = val; }
 }
