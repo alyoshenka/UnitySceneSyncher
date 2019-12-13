@@ -64,10 +64,10 @@ public class ClientWindow : EditorWindow
             {
                 buttonMsg = connectMsg;
 
-                Debug.Log("disconnected from " + serverAddress);
-
                 client?.Stop();
                 clientThread?.Join();
+
+                Debug.Log("Disconnected from " + serverAddress);
             }
         }
 
@@ -80,10 +80,14 @@ public class ClientWindow : EditorWindow
 
         if(GUILayout.Button(new GUIContent("Display Devs in Scene")))
         {
-            GameObject go = new GameObject("DevDisplay");
-            go.AddComponent<DevDisplay>();
-            client.display = go.GetComponent<DevDisplay>();
-            Debug.Assert(null != client.display);
+            DevDisplay currentDisplay = FindObjectOfType<DevDisplay>();
+            if(null == currentDisplay)
+            {
+                GameObject go = new GameObject("DevDisplay");
+                go.AddComponent<DevDisplay>();
+                currentDisplay = go.GetComponent<DevDisplay>();
+            }
+            currentDisplay.client = client;
         }
 
         messageMsg = EditorGUILayout.TextField("Send a message", messageMsg);

@@ -10,7 +10,7 @@ namespace Network
         protected int port;
         protected string connectionKey;
 
-        protected Developer[] developers;
+        public Developer[] developers;
 
         public abstract void Start();
         public abstract void Run();

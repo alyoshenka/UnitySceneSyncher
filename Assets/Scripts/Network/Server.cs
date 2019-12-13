@@ -148,11 +148,46 @@ namespace Network
                     Developer newDev = (Developer)rec.other;
                     Console.WriteLine("Added new developer: " + newDev.GetName());
                     developers[sender.Id] = newDev;
+
+                    // ok now this is actually terrible
+                    foreach(NetPeer peer in server.ConnectedPeerList)
+                    {
+                        BinaryFormatter bf = new BinaryFormatter();
+                        MemoryStream ms = new MemoryStream();
+
+                        NetworkData dat = new NetworkData
+                        {
+                            type = DataRecieveType.developerUpdate,
+                            other = developers[peer.Id]
+                        };
+                        bf.Serialize(ms, dat);
+                        byte[] data = ms.ToArray();
+
+                        sender.Send(data, DeliveryMethod.ReliableOrdered);
+                    }
                     break;
                 case DataRecieveType.developerUpdate:
                     Developer updateDev = (Developer)rec.other;
                     developers[sender.Id] = updateDev;
                     Console.WriteLine(updateDev.DisplayString());
+
+                    // put into a function
+                    // ok now this is actually terrible
+                    foreach (NetPeer peer in server.ConnectedPeerList)
+                    {
+                        BinaryFormatter bf = new BinaryFormatter();
+                        MemoryStream ms = new MemoryStream();
+
+                        NetworkData dat = new NetworkData
+                        {
+                            type = DataRecieveType.developerUpdate,
+                            other = developers[peer.Id]
+                        };
+                        bf.Serialize(ms, dat);
+                        byte[] data = ms.ToArray();
+
+                        sender.Send(data, DeliveryMethod.ReliableOrdered);
+                    }
                     break;
                 case DataRecieveType.developerMessage:
                     Console.WriteLine(developers[sender.Id]?.GetName() + " said: " + (string)rec.other);

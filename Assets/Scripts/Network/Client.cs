@@ -19,12 +19,9 @@ public class Client : NetworkConnection
     NetManager client;
     NetPeer server = null;
 
-    Network.Developer myDeveloper;
-
-    public DevDisplay display;
+    Developer myDeveloper;
 
     string hostIP;
-
     bool shouldRun;
 
     private Client() { }
@@ -40,7 +37,9 @@ public class Client : NetworkConnection
         listener = new EventBasedNetListener();
         client = new NetManager(listener);
 
-        myDeveloper = new Network.Developer(devName);
+        developers = new Developer[maxPeerCount];
+        for(int i = 0; i < maxPeerCount; i++) { developers[i] = null; }
+        myDeveloper = new Developer(devName);
     }
 
     public override void Start()
@@ -97,7 +96,7 @@ public class Client : NetworkConnection
         bf.Serialize(ms, dat);
         byte[] data = ms.ToArray();
 
-        server?.Send(data, DeliveryMethod.ReliableOrdered);
+        server.Send(data, DeliveryMethod.ReliableOrdered);
     }
 
     /// <summary>
@@ -150,8 +149,10 @@ public class Client : NetworkConnection
         switch (rec.type)
         {
             case DataRecieveType.developerAdd:
+                developers[sender.Id] = (Developer)rec.other;
                 break;
             case DataRecieveType.developerUpdate:
+                developers[sender.Id] = (Developer)rec.other;
                 break;
             case DataRecieveType.developerMessage:
                 Debug.Log((string)rec.other);

@@ -4,12 +4,18 @@ using UnityEngine;
 
 public class DevDisplay : MonoBehaviour
 {
-    Network.Developer[] developers;
+    public Client client;
 
     private void OnDrawGizmos()
     {
+        if(null == client)
+        {
+            Debug.LogWarning("Cannot find list of devs");
+            return;
+        }
+
         Gizmos.color = new Color(222, 0, 255);
-        foreach (Network.Developer dev in developers)
+        foreach (Network.Developer dev in client.developers)
         {
             if(null == dev) { continue; }
 
