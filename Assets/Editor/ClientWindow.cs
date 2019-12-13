@@ -84,11 +84,17 @@ public class ClientWindow : EditorWindow
 
     void Connect()
     {
+        if (null == client || !client.isRunning)
+        {
+            Debug.LogWarning("Cannot connect: server null");
+            return;
+        }
+
         buttonMsg = disconnectMsg;
         if (displayDebugMessages) { Debug.Log("Connected to " + serverAddress + " as " + devName); }
 
         client = new Client(devName, serverAddress);
-        MyHeirarchy.client = client;
+        DisplayHierarchy.client = client;
         client.myDeveloper.SetDisplayColor(buttonColor);
 
         client.Start();
@@ -98,15 +104,21 @@ public class ClientWindow : EditorWindow
 
     void Disconnect()
     {
-        buttonMsg = connectMsg;
+        DisconnectDisplay();
 
         client?.Stop();
         clientThread?.Join();
 
         client = null;
-        MyHeirarchy.client = null;
+        DisplayHierarchy.client = null;
+        DevDisplay.client = null;
 
         if (displayDebugMessages) { Debug.Log("Disconnected from " + serverAddress); }
+    }
+
+    void DisconnectDisplay()
+    {
+        buttonMsg = connectMsg;
     }
 
     void DisplayDevsInScene()
@@ -120,19 +132,19 @@ public class ClientWindow : EditorWindow
             currentDisplay = go.GetComponent<DevDisplay>(); // make singleton instance
             currentDisplay.CheckForClient(); // warn if not connected
         }
-        currentDisplay.client = client;
+        DevDisplay.client = client;
     }
 
     void DisplaySceneHierarchy()
     {
-        MyHeirarchy currentHierarchy = FindObjectOfType<MyHeirarchy>();
+        DisplayHierarchy currentHierarchy = FindObjectOfType<DisplayHierarchy>();
         if (null == currentHierarchy)
         {
             GameObject go = new GameObject("HierarchyDisplay");
-            go.AddComponent<MyHeirarchy>();
+            go.AddComponent<DisplayHierarchy>();
             go.transform.SetAsFirstSibling(); // instantiate to top
-            currentHierarchy = go.GetComponent<MyHeirarchy>(); // make singleton instance
-            MyHeirarchy.client = client;
+            currentHierarchy = go.GetComponent<DisplayHierarchy>(); // make singleton instance
+            DisplayHierarchy.client = client;
             currentHierarchy.StartDisplaying();
         }
     }
@@ -143,11 +155,12 @@ public class ClientWindow : EditorWindow
     {
         if (displayDebugMessages) { Debug.Log("Disconnected from server"); } // put in different place
 
-        client.Stop();
+        client?.Stop();
     }
 
     private void OnInspectorUpdate()
     {
+        if (null == client || !client.isRunning) { DisconnectDisplay(); } // call on event
         if (sendWithInspectorUpdate) { client?.SendData(); }
     }
 }

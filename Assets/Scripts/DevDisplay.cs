@@ -8,7 +8,7 @@ using UnityEngine;
 public class DevDisplay : MonoBehaviour
 {
     public int devDisplaySize = 2; // make editor
-    public Client client { get; set; }
+    public static Client client;
 
     public void CheckForClient()
     {

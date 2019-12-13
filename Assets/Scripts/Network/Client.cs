@@ -19,6 +19,8 @@ public class Client : NetworkConnection
     NetManager client;
     NetPeer server = null;
 
+    public bool isRunning { get => null != server; }
+
     public Developer myDeveloper;
     bool displayDebugMessages;
 
@@ -58,6 +60,7 @@ public class Client : NetworkConnection
     public override void Stop()
     {
         shouldRun = false;
+        server = null;
 
         client.Stop(); // bad ordering?
     }
@@ -155,7 +158,7 @@ public class Client : NetworkConnection
                 AddNewDeveloper(rec, sender.Id);
                 break;
             case DataRecieveType.developerUpdate:
-                developers[sender.Id] = (Developer)rec.other;
+                UpdateExistingDeveloper(rec, sender.Id);
                 break;
             case DataRecieveType.developerMessage:
                 HandleDeveloperMessage(developers[sender.Id] == null ? developers[sender.Id].GetName() : "null", (string)rec.other);

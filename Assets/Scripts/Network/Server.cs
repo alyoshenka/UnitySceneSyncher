@@ -18,6 +18,9 @@ using System.Diagnostics;
 // only send info when it changes
 //      different update rates for different windows?
 
+// SendToAll
+// disconnect function
+
 namespace Network
 {
     public class Server : NetworkConnection

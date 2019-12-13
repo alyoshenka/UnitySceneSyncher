@@ -10,11 +10,12 @@ using System.Collections.Generic;
 /// shows interactions between other devs and hierarchy
 /// </summary>
 [ExecuteAlways]
-public class MyHeirarchy : MonoBehaviour
+public class DisplayHierarchy : MonoBehaviour
 {
     private static Vector2 offset = Vector2.up * 2;
 
     public static Client client;
+    public static float a = 0.2f;
 
     public void StartDisplaying() { EditorApplication.hierarchyWindowItemOnGUI += HandleHeirarchyWindowItemOnGUI; }
 
@@ -22,40 +23,30 @@ public class MyHeirarchy : MonoBehaviour
 
     private static void HandleHeirarchyWindowItemOnGUI(int instanceID, Rect selectionRect)
     {
-        Color fontColor = Color.blue;
         Color backgroundColor = Color.gray;
 
         var obj = EditorUtility.InstanceIDToObject(instanceID);
         if(null != obj)
         {
             // slightly terrible
-            if(client != null)
+            if (client != null)
             {
                 foreach (Network.Developer dev in client.developers)
                 {
                     if (dev != null && dev.GetSelectedGameObjectIndex() == instanceID)
                     {
                         backgroundColor = dev.GetDisplayColor();
+                        backgroundColor.a = a;
+                        Rect offsetRect = new Rect(selectionRect.position + offset, selectionRect.size);
+                        EditorGUI.DrawRect(selectionRect, backgroundColor);
                         break;
                     }
                 }
-            }
-
-            var prefabType = PrefabUtility.GetPrefabAssetType(obj);
-            if(prefabType == PrefabAssetType.Regular)
-            {
-                fontColor = Color.white;
-            }
-
-            Rect offsetRect = new Rect(selectionRect.position + offset, selectionRect.size);
-            EditorGUI.DrawRect(selectionRect, backgroundColor);
-            EditorGUI.LabelField(offsetRect, obj.name, new GUIStyle()
-            {
-                normal = new GUIStyleState() { textColor = fontColor },
-                fontStyle = FontStyle.Bold
-            });
+            }           
         }
     }
+
+    private void OnEnable() { StartDisplaying(); }
 
     private void OnDestroy() { StopDisplaying(); }
 }
