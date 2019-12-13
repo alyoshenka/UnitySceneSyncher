@@ -12,8 +12,6 @@ using System.Threading;
 /// </summary>
 public class ClientWindow : EditorWindow
 {
-    static string connectedMsg = "connected to server";
-    static string disconnectedMsg = "waiting to connect";
     static string connectMsg = "Connect";
     static string disconnectMsg = "Disconnect";
 
@@ -25,8 +23,8 @@ public class ClientWindow : EditorWindow
     Color displayColor = Color.black;
     Color buttonColor = Color.black;
 
-    bool connected = false;
-    bool sendWithInspectorUpdate = false;
+    bool connected = false; // currently connected to server
+    bool sendWithInspectorUpdate = false; // send updates to server on every InspectorGUI update
     bool displayDebugMessages = false;
 
     Client client;
@@ -61,11 +59,9 @@ public class ClientWindow : EditorWindow
             else { Disconnect(); }
         }
 
-        if (GUILayout.Button(new GUIContent("Push Transform")))
-        {
-            client?.SendData();
-        }
+        if (GUILayout.Button(new GUIContent("Push Transform"))) { client?.SendData(); }
 
+        // Settings
         sendWithInspectorUpdate = EditorGUILayout.Toggle("Update With Inspector?", sendWithInspectorUpdate);
         displayDebugMessages = EditorGUILayout.Toggle("Display Debug Messages?", displayDebugMessages);
         client?.DisplayDebugMessages(displayDebugMessages);
@@ -92,6 +88,9 @@ public class ClientWindow : EditorWindow
         if (displayDebugMessages) { Debug.Log("Connected to " + serverAddress + " as " + devName); }
 
         client = new Client(devName, serverAddress);
+        MyHeirarchy.client = client;
+        client.myDeveloper.SetDisplayColor(buttonColor);
+
         client.Start();
         clientThread = new Thread(client.Run);
         clientThread.Start();
@@ -103,6 +102,9 @@ public class ClientWindow : EditorWindow
 
         client?.Stop();
         clientThread?.Join();
+
+        client = null;
+        MyHeirarchy.client = null;
 
         if (displayDebugMessages) { Debug.Log("Disconnected from " + serverAddress); }
     }
