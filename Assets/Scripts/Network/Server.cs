@@ -102,7 +102,7 @@ namespace Network
             NetworkData sendData = new NetworkData
             {
                 type = DataRecieveType.serverInitialize,
-                other = "Welcome!"
+                other = "Welcome" // peer is already connected
             };
 
             BinaryFormatter bf = new BinaryFormatter();
@@ -147,6 +147,9 @@ namespace Network
         {
             switch (rec.type)
             {
+                case DataRecieveType.developerInitialize:
+                    InitializeNewDeveloper(rec, sender);
+                    break;
                 case DataRecieveType.developerAdd:
                     AddNewDeveloper(rec, sender.Id);
                     break;
@@ -164,6 +167,28 @@ namespace Network
 
         #region Data Reactions
 
+        void InitializeNewDeveloper(NetworkData rec, NetPeer origin)
+        {
+            // initialize
+            Developer newDev = (Developer)rec.other;
+            newDev.SetArrIdx(server.PeersCount - 1);
+            Console.WriteLine("Created new developer: " + newDev.GetName());
+
+            // send it back
+            BinaryFormatter bf = new BinaryFormatter();
+            MemoryStream ms = new MemoryStream();
+
+            NetworkData dat = new NetworkData
+            {
+                type = DataRecieveType.developerInitialize,
+                other = newDev
+            };
+            bf.Serialize(ms, dat);
+            byte[] data = ms.ToArray();
+
+            origin.Send(data, DeliveryMethod.ReliableOrdered);
+        }
+
         void AddNewDeveloper(NetworkData rec, int id)
         {
             Developer newDev = (Developer)rec.other;
@@ -178,7 +203,7 @@ namespace Network
 
                 NetworkData dat = new NetworkData
                 {
-                    type = DataRecieveType.developerUpdate,
+                    type = DataRecieveType.developerAdd,
                     other = developers[peer.Id]
                 };
                 bf.Serialize(ms, dat);

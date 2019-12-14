@@ -12,12 +12,12 @@ namespace Network
         // something something about these being bitwise
         // so i can say which bit of info i am sending
 
+        developerInitialize,    // initialize current developer
+        developerAdd,           // add a new developer connection
+        developerUpdate,        // update an existing developer connection
+        developerMessage,       // send a developer message
 
-        developerAdd,       // add a new developer connection
-        developerUpdate,    // update an existing developer connection
-        developerMessage,   // send a developer message
-
-        serverInitialize    // initialize server connection
+        serverInitialize        // initialize server connection
     }
     
     [System.Serializable]

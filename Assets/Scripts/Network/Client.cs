@@ -21,7 +21,7 @@ public class Client : NetworkConnection
 
     public bool isRunning { get => null != server; }
 
-    public Developer myDeveloper;
+    public Developer myDeveloper = null;
     bool displayDebugMessages;
 
     string hostIP;
@@ -51,7 +51,6 @@ public class Client : NetworkConnection
     {
         client.Start();
         client.Connect(hostIP, port, connectionKey);
-
         if (displayDebugMessages) { Debug.Log("Client started"); }
 
         listener.NetworkReceiveEvent += NetworkRecieve;
@@ -98,7 +97,7 @@ public class Client : NetworkConnection
 
         NetworkData dat = new NetworkData
         {
-            type = Network.DataRecieveType.developerAdd,
+            type = DataRecieveType.developerInitialize,
             other = myDeveloper
         };
         bf.Serialize(ms, dat);
@@ -154,6 +153,9 @@ public class Client : NetworkConnection
     {
         switch (rec.type)
         {
+            case DataRecieveType.developerInitialize:
+                InitializeNewDeveloper(rec, sender);
+                break;
             case DataRecieveType.developerAdd:
                 AddNewDeveloper(rec, sender.Id);
                 break;
@@ -161,7 +163,7 @@ public class Client : NetworkConnection
                 UpdateExistingDeveloper(rec, sender.Id);
                 break;
             case DataRecieveType.developerMessage:
-                HandleDeveloperMessage(developers[sender.Id] == null ? developers[sender.Id].GetName() : "null", (string)rec.other);
+                HandleDeveloperMessage(developers[sender.Id] == null ? developers[sender.Id].GetName() : "null", (string)rec.other);         
                 break;
 
             case DataRecieveType.serverInitialize:
@@ -175,6 +177,19 @@ public class Client : NetworkConnection
 
     #region Data Reactions
 
+    void InitializeServer(NetworkData rec, NetPeer sender)
+    {
+        server = sender;
+        if (displayDebugMessages) { Debug.Log("Server said: " + (string)rec.other); }
+        SendInitialData(); // initialze server 
+    }
+
+    void InitializeNewDeveloper(NetworkData rec, NetPeer sender)
+    { 
+        myDeveloper = (Developer)rec.other;
+        if (displayDebugMessages) { Debug.Log("Developer initialized to " + myDeveloper.GetArrIdx()); }
+    }
+
     void AddNewDeveloper(NetworkData rec, int id) { developers[id] = (Developer)rec.other; }
 
     void UpdateExistingDeveloper(NetworkData rec, int id)
@@ -184,13 +199,6 @@ public class Client : NetworkConnection
     }
 
     void HandleDeveloperMessage(string name, string msg) { Debug.Log(name + " said: " + msg); }
-
-    void InitializeServer(NetworkData rec, NetPeer sender)
-    {
-        server = sender;
-        if (displayDebugMessages) { Debug.Log("Message from server: " + (string)rec.other); }
-        SendInitialData(); // initialze server 
-    }
 
     #endregion
 

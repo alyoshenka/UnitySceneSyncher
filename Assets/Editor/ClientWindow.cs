@@ -97,7 +97,7 @@ public class ClientWindow : EditorWindow
 
     void Disconnect()
     {
-        DisconnectDisplay();
+        buttonMsg = connectMsg;
 
         client?.Stop();
         clientThread?.Join();
@@ -107,11 +107,6 @@ public class ClientWindow : EditorWindow
         DevDisplay.client = null;
 
         if (displayDebugMessages) { Debug.Log("Disconnected from " + serverAddress); }
-    }
-
-    void DisconnectDisplay()
-    {
-        buttonMsg = connectMsg;
     }
 
     void DisplayDevsInScene()
@@ -153,7 +148,6 @@ public class ClientWindow : EditorWindow
 
     private void OnInspectorUpdate()
     {
-        if (null == client || !client.isRunning) { DisconnectDisplay(); } // call on event
         if (sendWithInspectorUpdate) { client?.SendData(); }
     }
 }

@@ -11,6 +11,7 @@ namespace Network
         public static int maxNameSize = 20; // maximum string size
 
         char[] displayName;
+        int arrIdx; 
         float4_S displayColor;
 
         float3_S position;
@@ -28,9 +29,15 @@ namespace Network
 
             displayName = new char[maxNameSize];
             displayName = name.ToCharArray(0, Mathf.Min(name.Length, maxNameSize));
+
+            arrIdx = -1;
         }
 
         #region Get/Setters
+
+        public void SetArrIdx(int idx) { arrIdx = idx; }
+
+        public int GetArrIdx() { return arrIdx; }
 
         public void SetPosition(Vector3 pos) { position = new float3_S(pos); }
 
@@ -63,6 +70,7 @@ namespace Network
         public string DisplayString() // bool verbose
         {
             string s = "Name: " + GetName() + "\n";
+            s += "Idx: " + GetArrIdx() + "\n";
             s += "Pos: " + GetPosition() + "\n";
             s += "Rot: " + GetRotation() + "\n";
             s += "Win: " + GetCurrentTab() + "\n";
