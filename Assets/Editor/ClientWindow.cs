@@ -23,7 +23,7 @@ public class ClientWindow : EditorWindow
     Color displayColor = Color.black;
     Color buttonColor = Color.black;
 
-    bool connected = false; // currently connected to server
+    bool connected { get => client != null; } // currently connected to server
     bool sendWithInspectorUpdate = false; // send updates to server on every InspectorGUI update
     bool displayDebugMessages = false;
 
@@ -93,8 +93,6 @@ public class ClientWindow : EditorWindow
 
         buttonMsg = disconnectMsg;
         if (displayDebugMessages) { Debug.Log("Connected to " + serverAddress + " as " + devName); }
-
-        connected = true;
     }
 
     void Disconnect()
@@ -109,8 +107,6 @@ public class ClientWindow : EditorWindow
         DevDisplay.client = null;
 
         if (displayDebugMessages) { Debug.Log("Disconnected from " + serverAddress); }
-
-        connected = false;
     }
 
     void DisconnectDisplay()

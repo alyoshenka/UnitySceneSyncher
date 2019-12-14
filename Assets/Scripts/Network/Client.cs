@@ -177,7 +177,11 @@ public class Client : NetworkConnection
 
     void AddNewDeveloper(NetworkData rec, int id) { developers[id] = (Developer)rec.other; }
 
-    void UpdateExistingDeveloper(NetworkData rec, int id) { developers[id] = (Developer)rec.other; }
+    void UpdateExistingDeveloper(NetworkData rec, int id)
+    {
+        developers[id] = (Developer)rec.other;
+        if (displayDebugMessages) { Debug.Log("Updated dev " + id + ": " + developers[id].GetName()); }
+    }
 
     void HandleDeveloperMessage(string name, string msg) { Debug.Log(name + " said: " + msg); }
 
