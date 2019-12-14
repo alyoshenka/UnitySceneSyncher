@@ -23,26 +23,23 @@ public class DisplayHierarchy : MonoBehaviour
 
     private static void HandleHeirarchyWindowItemOnGUI(int instanceID, Rect selectionRect)
     {
+        if(null == client) { return; }
+
         Color backgroundColor = Color.gray;
 
         var obj = EditorUtility.InstanceIDToObject(instanceID);
         if(null != obj)
         {
-            // slightly terrible
-            if (client != null)
+            foreach (Network.Developer dev in client.developers)
             {
-                foreach (Network.Developer dev in client.developers)
+                if (dev != null && dev.GetSelectedGameObjectIndex() == instanceID)
                 {
-                    if (dev != null && dev.GetSelectedGameObjectIndex() == instanceID)
-                    {
-                        backgroundColor = dev.GetDisplayColor();
-                        backgroundColor.a = a;
-                        Rect offsetRect = new Rect(selectionRect.position + offset, selectionRect.size);
-                        EditorGUI.DrawRect(selectionRect, backgroundColor);
-                        break;
-                    }
+                    backgroundColor = dev.GetDisplayColor();
+                    backgroundColor.a = a;
+                    Rect offsetRect = new Rect(selectionRect.position + offset, selectionRect.size);
+                    EditorGUI.DrawRect(selectionRect, backgroundColor);
                 }
-            }           
+            }
         }
     }
 
