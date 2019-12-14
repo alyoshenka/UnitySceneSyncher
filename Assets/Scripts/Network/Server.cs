@@ -151,7 +151,7 @@ namespace Network
                     InitializeNewDeveloper(rec, sender);
                     break;
                 case DataRecieveType.developerAdd:
-                    AddNewDeveloper(rec, sender.Id);
+                    AddNewDeveloper(rec);
                     break;
                 case DataRecieveType.developerUpdate:
                     UpdateExistingDeveloper(rec, sender);
@@ -189,11 +189,11 @@ namespace Network
             origin.Send(data, DeliveryMethod.ReliableOrdered);
         }
 
-        void AddNewDeveloper(NetworkData rec, int id)
+        void AddNewDeveloper(NetworkData rec)
         {
             Developer newDev = (Developer)rec.other;
             Console.WriteLine("Added new developer: " + newDev.GetName());
-            developers[id] = newDev;
+            developers[newDev.GetArrIdx()] = newDev;
 
             // ok now this is actually terrible
             foreach (NetPeer peer in server.ConnectedPeerList)
