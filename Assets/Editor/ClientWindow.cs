@@ -54,8 +54,7 @@ public class ClientWindow : EditorWindow
         // Connect
         if (GUILayout.Button(new GUIContent(buttonMsg)))
         {
-            connected = !connected;
-            if (connected) { Connect(); }
+            if (!connected) { Connect(); }
             else { Disconnect(); }
         }
 
@@ -84,15 +83,6 @@ public class ClientWindow : EditorWindow
 
     void Connect()
     {
-        if (null == client || !client.isRunning)
-        {
-            Debug.LogWarning("Cannot connect: server null");
-            return;
-        }
-
-        buttonMsg = disconnectMsg;
-        if (displayDebugMessages) { Debug.Log("Connected to " + serverAddress + " as " + devName); }
-
         client = new Client(devName, serverAddress);
         DisplayHierarchy.client = client;
         client.myDeveloper.SetDisplayColor(buttonColor);
@@ -100,6 +90,11 @@ public class ClientWindow : EditorWindow
         client.Start();
         clientThread = new Thread(client.Run);
         clientThread.Start();
+
+        buttonMsg = disconnectMsg;
+        if (displayDebugMessages) { Debug.Log("Connected to " + serverAddress + " as " + devName); }
+
+        connected = true;
     }
 
     void Disconnect()
@@ -114,6 +109,8 @@ public class ClientWindow : EditorWindow
         DevDisplay.client = null;
 
         if (displayDebugMessages) { Debug.Log("Disconnected from " + serverAddress); }
+
+        connected = false;
     }
 
     void DisconnectDisplay()
