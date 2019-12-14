@@ -157,10 +157,10 @@ public class Client : NetworkConnection
                 InitializeNewDeveloper(rec, sender);
                 break;
             case DataRecieveType.developerAdd:
-                AddNewDeveloper(rec, sender.Id);
+                AddNewDeveloper(rec);
                 break;
             case DataRecieveType.developerUpdate:
-                UpdateExistingDeveloper(rec, sender.Id);
+                UpdateExistingDeveloper(rec);
                 break;
             case DataRecieveType.developerMessage:
                 HandleDeveloperMessage(developers[sender.Id] == null ? developers[sender.Id].GetName() : "null", (string)rec.other);         
@@ -190,12 +190,17 @@ public class Client : NetworkConnection
         if (displayDebugMessages) { Debug.Log("Developer initialized to " + myDeveloper.GetArrIdx()); }
     }
 
-    void AddNewDeveloper(NetworkData rec, int id) { developers[id] = (Developer)rec.other; }
-
-    void UpdateExistingDeveloper(NetworkData rec, int id)
+    void AddNewDeveloper(NetworkData rec)
     {
-        developers[id] = (Developer)rec.other;
-        if (displayDebugMessages) { Debug.Log("Updated dev " + id + ": " + developers[id].GetName()); }
+        Developer newDev = (Developer)rec.other;
+        developers[newDev.GetArrIdx()] = newDev;
+    }
+
+    void UpdateExistingDeveloper(NetworkData rec)
+    {
+        Developer newDev = (Developer)rec.other;
+        developers[newDev.GetArrIdx()] = newDev;
+        if (displayDebugMessages) { Debug.Log("Updated dev " + newDev.GetArrIdx() + ": " + newDev.GetName()); }
     }
 
     void HandleDeveloperMessage(string name, string msg) { Debug.Log(name + " said: " + msg); }
