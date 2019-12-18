@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEditor;
 using System.Threading;
 
@@ -27,13 +25,13 @@ public class ClientWindow : EditorWindow
     bool sendWithInspectorUpdate = false; // send updates to server on every InspectorGUI update
     bool displayDebugMessages = false;
 
-    Client client;
+    public Client client;
     Thread clientThread;
 
     [MenuItem("Window/UnitySceneSyncher/ClientWindow")]
     static void Init()
     {
-        ClientWindow win = CreateInstance<ClientWindow>(); // allows mutliple
+        ClientWindow win = (ClientWindow)GetWindow(typeof(ClientWindow));
         win.Show();
     }
 
@@ -42,7 +40,6 @@ public class ClientWindow : EditorWindow
         GUILayout.Label("Client Settings", EditorStyles.boldLabel);
 
         // Client Settings
-        serverAddress = EditorGUILayout.TextField("Server Address", serverAddress);
         devName = EditorGUILayout.TextField("Your Name", devName);
 
         // Display Color
@@ -69,7 +66,7 @@ public class ClientWindow : EditorWindow
         if (GUILayout.Button(new GUIContent("Display Devs in Scene"))) { DisplayDevsInScene(); }
         if(GUILayout.Button(new GUIContent("Display Netorked Scene Hierarchy"))) { DisplaySceneHierarchy(); }
 
-        messageMsg = EditorGUILayout.TextArea(messageMsg);
+        messageMsg = EditorGUILayout.TextField("Send a message", messageMsg);
         if(GUILayout.Button(new GUIContent("Send"))) { client.SendMessage(messageMsg);  }
     }
 
@@ -83,7 +80,7 @@ public class ClientWindow : EditorWindow
 
     void Connect()
     {
-        client = new Client(devName, serverAddress);
+        client = new Client(devName, new Network.NetworkSettings());
         DisplayHierarchy.client = client;
         client.myDeveloper.SetDisplayColor(buttonColor);
 
@@ -138,6 +135,11 @@ public class ClientWindow : EditorWindow
     }
 
     #endregion
+
+    public void SetSettings(Network.NetworkSettings set)
+    {
+        if(null == client) { client = new Client(devName, set); }
+    }
 
     private void OnDestroy()
     {

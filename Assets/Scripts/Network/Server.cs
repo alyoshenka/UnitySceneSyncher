@@ -21,6 +21,8 @@ using System.Diagnostics;
 // SendToAll
 // disconnect function
 
+// serparate server application and settings manager ?
+
 namespace Network
 {
     public class Server : NetworkConnection
@@ -34,11 +36,11 @@ namespace Network
         {
             shouldRun = true;
 
-            developers = new Developer[maxPeerCount];
-            for(int i = 0; i < maxPeerCount; i++) { developers[i] = null; }
+            developers = new Developer[settings.maxPeerCount];
+            for(int i = 0; i < settings.maxPeerCount; i++) { developers[i] = null; }
 
-            port = 9050;
-            connectionKey = "SomeConnectionKey";
+            settings.port = 9050;
+            settings.connectionKey = "SomeConnectionKey";
 
             listener = new EventBasedNetListener();
             server = new NetManager(listener);
@@ -46,7 +48,7 @@ namespace Network
 
         public override void Start()
         {
-            server.Start(port);
+            server.Start(settings.port);
 
             Console.WriteLine("Server started");
 
@@ -85,10 +87,10 @@ namespace Network
         public void ConnectionRequest(ConnectionRequest request)
         {
             Console.WriteLine("Recieved connection request from: " + request);
-            if (server.PeersCount < maxPeerCount)
+            if (server.PeersCount < settings.maxPeerCount)
             {
-                request.AcceptIfKey(connectionKey);
-                Console.WriteLine("Accepted request: " + (maxPeerCount - server.PeersCount) + " open connections");
+                request.AcceptIfKey(settings.connectionKey);
+                Console.WriteLine("Accepted request: " + (settings.maxPeerCount - server.PeersCount) + " open connections");
             }
             else
             {

@@ -24,33 +24,31 @@ public class Client : NetworkConnection
     public Developer myDeveloper = null;
     bool displayDebugMessages;
 
-    string hostIP;
     bool shouldRun;
 
     bool updatePending; // ???
 
     private Client() { }
 
-    public Client(string devName, string ip)
+    public Client(string devName, NetworkSettings set)
     {
         shouldRun = true;
 
-        hostIP = ip;
-        port = 9050;
-        connectionKey = "SomeConnectionKey";
+        // change
+        settings = set;
 
         listener = new EventBasedNetListener();
         client = new NetManager(listener);
 
-        developers = new Developer[maxPeerCount];
-        for(int i = 0; i < maxPeerCount; i++) { developers[i] = null; }
+        developers = new Developer[settings.maxPeerCount];
+        for(int i = 0; i < settings.maxPeerCount; i++) { developers[i] = null; }
         myDeveloper = new Developer(devName);
     }
 
     public override void Start()
     {
         client.Start();
-        client.Connect(hostIP, port, connectionKey);
+        client.Connect(settings.serverAddress, settings.port, settings.connectionKey);
         if (displayDebugMessages) { Debug.Log("Client started"); }
 
         listener.NetworkReceiveEvent += NetworkRecieve;

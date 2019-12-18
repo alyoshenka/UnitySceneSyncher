@@ -4,11 +4,8 @@ namespace Network
 {
     public abstract class NetworkConnection
     {
-        protected const int maxPeerCount = 10;
-
         protected EventBasedNetListener listener;
-        protected int port;
-        protected string connectionKey;
+        public NetworkSettings settings;
 
         public Developer[] developers;
 
