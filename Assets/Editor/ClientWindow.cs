@@ -64,10 +64,10 @@ public class ClientWindow : EditorWindow
 
         // Display
         if (GUILayout.Button(new GUIContent("Display Devs in Scene"))) { DisplayDevsInScene(); }
-        if(GUILayout.Button(new GUIContent("Display Netorked Scene Hierarchy"))) { DisplaySceneHierarchy(); }
+        if (GUILayout.Button(new GUIContent("Display Netorked Scene Hierarchy"))) { DisplaySceneHierarchy(); }
 
         messageMsg = EditorGUILayout.TextField("Send a message", messageMsg);
-        if(GUILayout.Button(new GUIContent("Send"))) { client.SendMessage(messageMsg);  }
+        if (GUILayout.Button(new GUIContent("Send"))) { client.SendMessage(messageMsg); }
     }
 
     #region Window Actions
@@ -80,7 +80,7 @@ public class ClientWindow : EditorWindow
 
     void Connect()
     {
-        client = new Client(devName, ClientSettingsWindow.settings);
+        client = new Client(devName, SettingsWindow.settings);
         client.DisplayDebugMessages(displayDebugMessages);
         DisplayHierarchy.client = client;
         client.myDeveloper.SetDisplayColor(buttonColor);
@@ -139,7 +139,7 @@ public class ClientWindow : EditorWindow
 
     public void SetSettings(Network.NetworkSettings set)
     {
-        if(null == client) { client = new Client(devName, set); }
+        if (null == client) { client = new Client(devName, set); }
     }
 
     private void OnDestroy()

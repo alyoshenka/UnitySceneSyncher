@@ -1,14 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
 using System.Runtime.Serialization.Json;
 using System.Runtime.Serialization;
 using System.IO;
-
-using UnityEngine;
-
-// if file not found, regen with default settings
 
 namespace Network
 {

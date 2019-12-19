@@ -9,10 +9,6 @@ using System.IO;
 
 using System.Diagnostics;
 
-
-// need initial push on connection
-//      need to send name/id data right after connection to connect name/id to peer
-
 // make sure everything is closed/disconnected correctly
 
 // only send info when it changes
@@ -29,14 +25,12 @@ namespace Network
 {
     public class Server : NetworkConnection
     {
-        NetManager server;
+        public int threadSleepTime = 15; // ms
 
-        // TODO: file io or gui for settings
-        bool shouldRun;
+        NetManager server;
 
         public Server()
         {
-            shouldRun = true;
             LoadSettings();
 
             developers = new Developer[settings.maxPeerCount];
@@ -65,22 +59,13 @@ namespace Network
 
         public override void Run()
         {
-            server.PollEvents(); // get events
-
-            // process events
-
-            // SendToAll
-            //      send data to clients
-
-            Thread.Sleep(15);
+            server.PollEvents(); 
+            Thread.Sleep(threadSleepTime);
         }
 
         public override void Stop()
         {
-            shouldRun = false;
-
             server.Stop();
-
             Console.WriteLine("Server stopped");
         }
 

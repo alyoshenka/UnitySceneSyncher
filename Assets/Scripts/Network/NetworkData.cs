@@ -9,9 +9,6 @@ namespace Network
     /// </summary>
     public enum DataRecieveType : byte
     {
-        // something something about these being bitwise
-        // so i can say which bit of info i am sending
-
         developerInitialize,    // initialize current developer
         developerAdd,           // add a new developer connection
         developerUpdate,        // update an existing developer connection

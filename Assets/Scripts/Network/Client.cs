@@ -21,6 +21,7 @@ public class Client : NetworkConnection
 
     public bool isRunning { get => null != server; }
 
+    int threadSleepTime = 15; // ms
     public Developer myDeveloper = null;
     bool displayDebugMessages;
 
@@ -70,7 +71,7 @@ public class Client : NetworkConnection
         while (shouldRun)
         {
             client.PollEvents();
-            Thread.Sleep(15);
+            Thread.Sleep(threadSleepTime);
         }
     }
 
@@ -83,8 +84,8 @@ public class Client : NetworkConnection
 
         myDeveloper.SetPosition(SceneView.lastActiveSceneView.camera.transform.position);
         myDeveloper.SetRotation(SceneView.lastActiveSceneView.camera.transform.rotation);
-        myDeveloper.SetCurrentTab(EditorWindow.focusedWindow.titleContent.text);
-
+        if (null == EditorWindow.focusedWindow) { myDeveloper.SetCurrentTab("null"); }      
+        else { myDeveloper.SetCurrentTab(EditorWindow.focusedWindow.titleContent.text); }
         myDeveloper.SetSelectedGameObject(Selection.activeGameObject);
     }
 
@@ -112,7 +113,7 @@ public class Client : NetworkConnection
     /// </summary>
     public void SendData()
     {
-        Debug.Assert(null != server); // init server in construction
+        if(null == server) { return; }
 
         SetData();
 
@@ -127,7 +128,7 @@ public class Client : NetworkConnection
         bf.Serialize(ms, dat);
         byte[] data = ms.ToArray();
 
-        server.Send(data, DeliveryMethod.ReliableOrdered);
+        server?.Send(data, DeliveryMethod.ReliableOrdered);
     }
 
     #region Events

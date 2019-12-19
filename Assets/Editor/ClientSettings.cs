@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
 
-public class ClientSettingsWindow : EditorWindow
+public class SettingsWindow : EditorWindow
 {
     public static Network.NetworkSettings settings;
 
@@ -11,10 +11,10 @@ public class ClientSettingsWindow : EditorWindow
         settings.Load();
     }
 
-    [MenuItem("Window/UnitySceneSyncher/ClientSettings")]
+    [MenuItem("Window/UnitySceneSyncher/Settings")]
     static void Init()
     {
-        ClientSettingsWindow win = (ClientSettingsWindow)GetWindow(typeof(ClientSettingsWindow));
+        SettingsWindow win = (SettingsWindow)GetWindow(typeof(SettingsWindow));
         win.Show();
     }
 

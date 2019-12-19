@@ -67,7 +67,7 @@ namespace Network
 
         #endregion
 
-        public string DisplayString() // bool verbose
+        public string DisplayString()
         {
             string s = "Name: " + GetName() + "\n";
             s += "Idx: " + GetArrIdx() + "\n";

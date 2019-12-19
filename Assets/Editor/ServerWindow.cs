@@ -20,7 +20,7 @@ public class ServerWindow : EditorWindow
     static Network.Server server = null;
     static Thread serverThread;
 
-    [MenuItem("Window/UnitySceneSyncher/ServerWindow")]
+    [MenuItem("Window/UnitySceneSyncher/Server")]
     static void Init()
     {
         ServerWindow win = (ServerWindow)GetWindow(typeof(ServerWindow));
