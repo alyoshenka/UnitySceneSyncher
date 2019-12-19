@@ -23,6 +23,8 @@ using System.Diagnostics;
 
 // serparate server application and settings manager ?
 
+// what to do if connection is denied
+
 namespace Network
 {
     public class Server : NetworkConnection
@@ -35,12 +37,10 @@ namespace Network
         public Server()
         {
             shouldRun = true;
+            LoadSettings();
 
             developers = new Developer[settings.maxPeerCount];
             for(int i = 0; i < settings.maxPeerCount; i++) { developers[i] = null; }
-
-            settings.port = 9050;
-            settings.connectionKey = "SomeConnectionKey";
 
             listener = new EventBasedNetListener();
             server = new NetManager(listener);
@@ -50,7 +50,12 @@ namespace Network
         {
             server.Start(settings.port);
 
-            Console.WriteLine("Server started");
+            string startDisplay = "Server started";
+            startDisplay += "\nAdr: " + settings.serverAddress;
+            startDisplay += "\nCnt: " + settings.maxPeerCount;
+            startDisplay += "\nKey: " + settings.connectionKey;
+            startDisplay += "\nPrt: " + settings.port;
+            Console.WriteLine(startDisplay);
 
             listener.ConnectionRequestEvent += ConnectionRequest;
             listener.PeerConnectedEvent += PeerConnected;
@@ -87,16 +92,19 @@ namespace Network
         public void ConnectionRequest(ConnectionRequest request)
         {
             Console.WriteLine("Recieved connection request from: " + request);
-            if (server.PeersCount < settings.maxPeerCount)
-            {
-                request.AcceptIfKey(settings.connectionKey);
-                Console.WriteLine("Accepted request: " + (settings.maxPeerCount - server.PeersCount) + " open connections");
-            }
+            if (server.PeersCount < settings.maxPeerCount) { request.AcceptIfKey(settings.connectionKey); }
             else
             {
                 request.Reject();
                 Console.WriteLine("Denied request: server full");
+                return; // bad logic
             }
+
+            if(request.Result == ConnectionRequestResult.Accept)
+            {
+                Console.WriteLine("Accepted request: " + (settings.maxPeerCount - server.PeersCount) + " open connections");
+            }
+            else {  Console.WriteLine("Denied request: wrong key"); }
         }
 
         public void PeerConnected(NetPeer peer)
@@ -254,6 +262,13 @@ namespace Network
             {
                 Console.WriteLine(dev?.DisplayString());
             }
+        }
+
+        public void LoadSettings()
+        {
+            settings = new NetworkSettings();
+            string s = AppDomain.CurrentDomain.BaseDirectory;
+            settings.Load("../../../../../settings.json");
         }
     }
 }

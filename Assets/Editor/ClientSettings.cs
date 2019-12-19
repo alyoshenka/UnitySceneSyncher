@@ -3,7 +3,7 @@ using UnityEditor;
 
 public class ClientSettingsWindow : EditorWindow
 {
-    static Network.NetworkSettings settings;
+    public static Network.NetworkSettings settings;
 
     private void Awake()
     {
@@ -23,7 +23,11 @@ public class ClientSettingsWindow : EditorWindow
         GUILayout.Label("Connection Settings", EditorStyles.boldLabel);
 
         // settings
-        if(null == settings) { settings = new Network.NetworkSettings(); }
+        if(null == settings)
+        {
+            settings = new Network.NetworkSettings();
+            settings.Load();
+        }
 
         EditorGUI.BeginChangeCheck();
         settings.serverAddress = EditorGUILayout.TextField("Server Address", settings.serverAddress);

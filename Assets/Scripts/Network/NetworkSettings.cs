@@ -3,12 +3,16 @@ using System.Collections.Generic;
 using System.Text;
 
 using System.Runtime.Serialization.Json;
+using System.Runtime.Serialization;
 using System.IO;
+
+using UnityEngine;
 
 // if file not found, regen with default settings
 
 namespace Network
 {
+    [DataContract]
     public class NetworkSettings
     {
         public const string fileLocation = "settings.json";
@@ -18,12 +22,12 @@ namespace Network
         public const string defConnectionKey = "SomeConnectionKey";
         public const int defPort = 9050;
 
-        public string serverAddress;
-        public int maxPeerCount;
-        public string connectionKey;
-        public int port;
+        [DataMember] public string serverAddress;
+        [DataMember] public int maxPeerCount;
+        [DataMember] public string connectionKey;
+        [DataMember] public int port;
 
-        [NonSerialized] public bool saved; // is the current instance saved?
+        [IgnoreDataMember] public bool saved; // is the current instance saved?
 
         public NetworkSettings() { DefaultInitialize(); }
 
@@ -44,19 +48,25 @@ namespace Network
         /// <summary>
         /// loads data from file
         /// </summary>
-        public void Load()
+        public void Load(string fileName)
         {
-            using (Stream stream = File.OpenRead(fileLocation))
+            try
             {
-                if(null != stream)
-                {
-                    DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(NetworkSettings));
-                    NetworkSettings newSet = (NetworkSettings)ser.ReadObject(stream);
-                    SetToNew(newSet);
-                }
-                else { DefaultInitialize(); }
+                Stream stream = File.OpenRead(fileName);
+                stream.Position = 0;
+                DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(NetworkSettings));
+                NetworkSettings newSet = ser.ReadObject(stream) as NetworkSettings;
+                SetToNew(newSet);
+                stream.Close();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error\n" + e);
+                DefaultInitialize();
             }
         }
+
+        public void Load() { Load(fileLocation); }
 
         /// <summary>
         /// sets all values to defaults
@@ -78,6 +88,15 @@ namespace Network
             maxPeerCount = newSet.maxPeerCount;
             connectionKey = newSet.connectionKey;
             port = newSet.port;
+        }
+
+        public string DisplayString()
+        {
+            string s = "Adr: " + serverAddress;
+            s += "\nCnt: " + maxPeerCount;
+            s += "\nKey: " + connectionKey;
+            s += "\nPrt: " + port;
+            return s;
         }
     }
 }

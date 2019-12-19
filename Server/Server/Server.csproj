@@ -10,6 +10,7 @@
     <Compile Include="..\..\Assets\Scripts\Network\Developer.cs" Link="Developer.cs" />
     <Compile Include="..\..\Assets\Scripts\Network\NetworkConnection.cs" Link="NetworkConnection.cs" />
     <Compile Include="..\..\Assets\Scripts\Network\NetworkData.cs" Link="NetworkData.cs" />
+    <Compile Include="..\..\Assets\Scripts\Network\NetworkSettings.cs" Link="NetworkSettings.cs" />
     <Compile Include="..\..\Assets\Scripts\Network\Server.cs" Link="Server.cs" />
   </ItemGroup>
 

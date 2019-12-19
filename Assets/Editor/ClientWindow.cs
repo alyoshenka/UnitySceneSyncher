@@ -80,7 +80,7 @@ public class ClientWindow : EditorWindow
 
     void Connect()
     {
-        client = new Client(devName, new Network.NetworkSettings());
+        client = new Client(devName, ClientSettingsWindow.settings);
         DisplayHierarchy.client = client;
         client.myDeveloper.SetDisplayColor(buttonColor);
 
@@ -89,7 +89,7 @@ public class ClientWindow : EditorWindow
         clientThread.Start();
 
         buttonMsg = disconnectMsg;
-        if (displayDebugMessages) { Debug.Log("Connected to " + serverAddress + " as " + devName); }
+        if (displayDebugMessages) { Debug.Log("Trying to connect\n" + client.settings.DisplayString()); }
     }
 
     void Disconnect()

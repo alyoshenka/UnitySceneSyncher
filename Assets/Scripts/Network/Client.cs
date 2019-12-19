@@ -32,6 +32,8 @@ public class Client : NetworkConnection
 
     public Client(string devName, NetworkSettings set)
     {
+        Debug.Assert(null != set);
+
         shouldRun = true;
 
         // change
@@ -50,6 +52,8 @@ public class Client : NetworkConnection
         client.Start();
         client.Connect(settings.serverAddress, settings.port, settings.connectionKey);
         if (displayDebugMessages) { Debug.Log("Client started"); }
+
+        if(client.ConnectedPeerList.Count == 0) { Debug.Log("Connection failed"); } // there is a better wauy
 
         listener.NetworkReceiveEvent += NetworkRecieve;
     }
