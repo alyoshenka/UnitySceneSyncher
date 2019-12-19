@@ -8,7 +8,8 @@ namespace Network
         {
             Server server = new Server();
             server.Start();
-            while (true) { server.Run(); }
+            while (Console.ReadKey().Key != ConsoleKey.Escape) { server.Run(); }
+            server.Stop();
             Console.ReadLine();
         }
     }
