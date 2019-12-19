@@ -23,7 +23,7 @@ public class ClientWindow : EditorWindow
 
     bool connected { get => client != null; } // currently connected to server
     bool sendWithInspectorUpdate = false; // send updates to server on every InspectorGUI update
-    bool displayDebugMessages = false;
+    public static bool displayDebugMessages = false;
 
     public Client client;
     Thread clientThread;
@@ -81,6 +81,7 @@ public class ClientWindow : EditorWindow
     void Connect()
     {
         client = new Client(devName, ClientSettingsWindow.settings);
+        client.DisplayDebugMessages(displayDebugMessages);
         DisplayHierarchy.client = client;
         client.myDeveloper.SetDisplayColor(buttonColor);
 

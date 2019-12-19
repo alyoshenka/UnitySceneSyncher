@@ -65,19 +65,14 @@ namespace Network
 
         public override void Run()
         {
-            while (shouldRun)
-            {
-                server.PollEvents(); // get events
+            server.PollEvents(); // get events
 
-                // process events
+            // process events
 
-                // SendToAll
-                //      send data to clients
+            // SendToAll
+            //      send data to clients
 
-                Thread.Sleep(15);
-            }
-
-            server.Stop();
+            Thread.Sleep(15);
         }
 
         public override void Stop()
@@ -85,6 +80,8 @@ namespace Network
             shouldRun = false;
 
             server.Stop();
+
+            Console.WriteLine("Server stopped");
         }
 
         #region Events
@@ -267,8 +264,7 @@ namespace Network
         public void LoadSettings()
         {
             settings = new NetworkSettings();
-            string s = AppDomain.CurrentDomain.BaseDirectory;
-            settings.Load("../../../../../settings.json");
+            settings.Load("../../../../settings.json");
         }
     }
 }
