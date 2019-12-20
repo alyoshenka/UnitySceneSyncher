@@ -103,6 +103,33 @@ namespace Network
             byte[] data = ms.ToArray();
             Console.WriteLine("Connection from: " + peer.EndPoint);
             peer.Send(data, DeliveryMethod.ReliableOrdered);
+
+            SendConnectedDeveloperData(peer);
+        }
+
+        /// <summary>
+        /// gives the peer the existing developers
+        /// </summary>
+        void SendConnectedDeveloperData(NetPeer peer)
+        {
+            foreach(Developer dev in developers)
+            {
+                if(null != dev)
+                {
+                    NetworkData sendData = new NetworkData
+                    {
+                        type = DataRecieveType.developerAdd,
+                        other = dev
+                    };
+
+                    BinaryFormatter bf = new BinaryFormatter();
+                    MemoryStream ms = new MemoryStream();
+                    bf.Serialize(ms, sendData);
+                    byte[] data = ms.ToArray();
+                    Console.WriteLine("Sending developer " + dev.GetName() + " to " + peer.EndPoint);
+                    peer.Send(data, DeliveryMethod.ReliableOrdered);
+                }
+            }
         }
 
         public void PeerDisconnected(NetPeer peer, DisconnectInfo disconnectInfo)
