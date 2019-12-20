@@ -1,0 +1,25 @@
+To Do:
+
+readme
+
+instructions
+
+troubleshooting
+
+value explanation
+
+purpose statement
+
+future improvements
+
+blocks
+
+code organization/comments
+
+better client side disconnect messages
+
+test server process close
+
+test window closes
+
+organize into subfolders

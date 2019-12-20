@@ -85,7 +85,10 @@ public class ClientWindow : EditorWindow
         DisplayHierarchy.client = client;
         client.myDeveloper.SetDisplayColor(buttonColor);
 
-        ((DisplayWindow)GetWindow(typeof(DisplayWindow))).client = client;
+        //DisplayWindow dispWin = ((DisplayWindow)GetWindow(typeof(DisplayWindow)));
+        //dispWin.client = client;
+        //dispWin.Hide();
+
 
         client.Start();
         clientThread = new Thread(client.Run);

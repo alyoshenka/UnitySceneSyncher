@@ -57,6 +57,8 @@ namespace Network
                 Console.WriteLine("Error\n" + e);
                 DefaultInitialize();
             }
+
+            saved = true;
         }
 
         public void Load() { Load(fileLocation); }

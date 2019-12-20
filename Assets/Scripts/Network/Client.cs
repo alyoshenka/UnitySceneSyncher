@@ -51,6 +51,7 @@ public class Client : NetworkConnection
         developers = new Developer[settings.maxPeerCount];
         for(int i = 0; i < settings.maxPeerCount; i++) { developers[i] = null; }
         myDeveloper = new Developer(devName);
+        myDeveloper.SetProjectName(Application.productName);
 
         developerUpdate += DeveloperUpdateNotification;
     }

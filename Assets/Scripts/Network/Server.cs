@@ -249,7 +249,7 @@ namespace Network
         public void LoadSettings()
         {
             settings = new NetworkSettings();
-            settings.Load("../../../../settings.json");
+            settings.Load("settings.json");
         }
     }
 }

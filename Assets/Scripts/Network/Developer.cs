@@ -16,6 +16,7 @@ namespace Network
 
         float3_S position;
         float4_S rotation;
+        char[] projectName; // we can now see if they are even in the same project
         char[] currentTab;
         int selectedGOID; // id of selected GameObject;
 
@@ -51,6 +52,10 @@ namespace Network
 
         public string GetName() { return new string(displayName); }
 
+        public void SetProjectName(string name) { projectName = name.ToCharArray(0, Mathf.Min(name.Length, maxNameSize)); }
+
+        public string GetProjectName() { return new string(projectName); }
+
         public void SetCurrentTab(string tab) { currentTab = tab.ToCharArray(0, Mathf.Min(tab.Length, maxNameSize)); }
 
         public string GetCurrentTab() { return new string(currentTab); }
@@ -70,6 +75,7 @@ namespace Network
         public string DisplayString()
         {
             string s = "Nam: " + GetName() + "\n";
+            s += "Prj: " + GetProjectName() + "\n";
             s += "Idx: " + GetArrIdx() + "\n";
             s += "Pos: " + GetPosition() + "\n";
             s += "Rot: " + GetRotation() + "\n";

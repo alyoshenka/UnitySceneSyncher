@@ -36,6 +36,7 @@ public class DisplayWindow : EditorWindow
 
     private void Update()
     {
+        return;
         if (null == client)
         {
             Client client = ((ClientWindow)GetWindow(typeof(ClientWindow))).client;
@@ -46,6 +47,8 @@ public class DisplayWindow : EditorWindow
 
     private void OnGUI()
     {
+        return;
+
         if (null == client) { return; }
 
         for (int i = 0; i < displays.Length; i++)

@@ -4,6 +4,9 @@ using UnityEngine;
 using UnityEditor;
 using System.Threading;
 
+using System.Diagnostics;
+using System.Runtime;
+
 // todo: server data
 //  num connections
 //  ping
@@ -11,14 +14,12 @@ using System.Threading;
 
 public class ServerWindow : EditorWindow
 {
-    string serverAddress = "localhost";
-    string serverMsg = "waiting to start server";
-    string buttonMsg = "Start Server";
+    static string start = "Start Server";
+    static string stop = "Stop Server";
+    static string buttonMsg = start;
 
-    bool serverRunning { get => null == server; }
-
-    static Network.Server server = null;
-    static Thread serverThread;
+    static bool serverRunning = false;
+    static Process p;
 
     [MenuItem("Window/UnitySceneSyncher/Server")]
     static void Init()
@@ -29,36 +30,31 @@ public class ServerWindow : EditorWindow
 
     private void OnGUI()
     {
-        GUILayout.Label("Server Settings", EditorStyles.boldLabel);
-        GUILayout.Label(serverMsg, EditorStyles.label);
-
-        serverAddress = EditorGUILayout.TextField("Server Address", serverAddress);
+        GUILayout.Label("Insert server warning here");
 
         if (GUILayout.Button(new GUIContent(buttonMsg)))
         {
-            if (serverRunning)
+            if (!serverRunning)
             {
-                serverMsg = "server running";
-                Debug.Log("started server at " + serverAddress);
-                buttonMsg = "Stop Server";
+                if (ClientWindow.displayDebugMessages) { UnityEngine.Debug.Log("Started server"); }
+                buttonMsg = stop;
+                serverRunning = true;
 
-
-                server = new Network.Server();
-                server.Start();
-                serverThread = new Thread(server.Run);
-                serverThread.Start();
+                // runs from main project file
+                p = System.Diagnostics.Process.Start("Network.exe");
             }
             else
             {
-                serverMsg = "waiting to start server";
-                Debug.Log("stopped server");
-                buttonMsg = "Start Server";
+                if (ClientWindow.displayDebugMessages) { UnityEngine.Debug.Log("Stopped server"); }
+                buttonMsg = start;
+                serverRunning = false;
 
-                server.Stop();
-                serverThread.Join();
-
-                server = null;
-                serverThread = null;
+                try { p?.Kill(); }
+                catch (System.InvalidOperationException e)
+                {
+                    if (ClientWindow.displayDebugMessages) { UnityEngine.Debug.Log("Server already closed"); }
+                }
+                catch(System.Exception e) { UnityEngine.Debug.LogError(e); }
             }            
         }
     }
