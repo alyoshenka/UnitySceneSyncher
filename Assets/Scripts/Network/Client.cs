@@ -16,6 +16,10 @@ using Network;
 /// </summary>
 public class Client : NetworkConnection
 {
+    // change to all events
+    public delegate void ConnectionRecieveEvent();
+    public event ConnectionRecieveEvent developerUpdate;
+
     NetManager client;
     NetPeer server = null;
 
@@ -47,6 +51,8 @@ public class Client : NetworkConnection
         developers = new Developer[settings.maxPeerCount];
         for(int i = 0; i < settings.maxPeerCount; i++) { developers[i] = null; }
         myDeveloper = new Developer(devName);
+
+        developerUpdate += DeveloperUpdateNotification;
     }
 
     public override void Start()
@@ -163,6 +169,7 @@ public class Client : NetworkConnection
                 break;
             case DataRecieveType.developerUpdate:
                 UpdateExistingDeveloper(rec);
+                developerUpdate.Invoke();
                 break;
             case DataRecieveType.developerMessage:
                 HandleDeveloperMessage(developers[sender.Id] == null ? developers[sender.Id].GetName() : "null", (string)rec.other);         
@@ -196,12 +203,19 @@ public class Client : NetworkConnection
     {
         Developer newDev = (Developer)rec.other;
         developers[newDev.GetArrIdx()] = newDev;
+
+        Debug.Assert(null != developers[newDev.GetArrIdx()]);
+        if (displayDebugMessages) { Debug.Log("Added new developer: " + newDev.GetName()); }
     }
 
     void UpdateExistingDeveloper(NetworkData rec)
     {
+        Debug.Assert(null != developers);
+
         Developer newDev = (Developer)rec.other;
         developers[newDev.GetArrIdx()] = newDev;
+
+        Debug.Assert(null != developers[newDev.GetArrIdx()]);
         if (displayDebugMessages) { Debug.Log("Updated dev " + newDev.GetArrIdx() + ": " + newDev.GetName()); }
     }
 
@@ -226,4 +240,6 @@ public class Client : NetworkConnection
     }
 
     public void DisplayDebugMessages(bool val) { displayDebugMessages = val; }
+
+    void DeveloperUpdateNotification() { Debug.Log("Developer update event"); }
 }

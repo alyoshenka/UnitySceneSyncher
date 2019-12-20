@@ -69,7 +69,7 @@ namespace Network
 
         public string DisplayString()
         {
-            string s = "Name: " + GetName() + "\n";
+            string s = "Nam: " + GetName() + "\n";
             s += "Idx: " + GetArrIdx() + "\n";
             s += "Pos: " + GetPosition() + "\n";
             s += "Rot: " + GetRotation() + "\n";

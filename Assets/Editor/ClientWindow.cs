@@ -28,7 +28,7 @@ public class ClientWindow : EditorWindow
     public Client client;
     Thread clientThread;
 
-    [MenuItem("Window/UnitySceneSyncher/ClientWindow")]
+    [MenuItem("Window/UnitySceneSyncher/Client")]
     static void Init()
     {
         ClientWindow win = (ClientWindow)GetWindow(typeof(ClientWindow));
@@ -84,6 +84,8 @@ public class ClientWindow : EditorWindow
         client.DisplayDebugMessages(displayDebugMessages);
         DisplayHierarchy.client = client;
         client.myDeveloper.SetDisplayColor(buttonColor);
+
+        ((DisplayWindow)GetWindow(typeof(DisplayWindow))).client = client;
 
         client.Start();
         clientThread = new Thread(client.Run);
