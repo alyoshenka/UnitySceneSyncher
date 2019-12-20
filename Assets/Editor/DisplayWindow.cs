@@ -19,6 +19,8 @@ public class DisplayWindow : EditorWindow
     {
         client = c;
         displays = new string[client.developers.Length];
+
+        client.developerUpdate += ReloadDevelopers; // only reload on dev update
     }
 
     public void ClearClient() { client = null; }
@@ -36,7 +38,7 @@ public class DisplayWindow : EditorWindow
     {
         UpdateClient();
 
-        EditorUtility.SetDirty(this); // force reload
+        // EditorUtility.SetDirty(this); // force reload
     }
 
     private void OnInspectorUpdate()

@@ -183,7 +183,7 @@ namespace Network
             bf.Serialize(ms, dat);
             byte[] data = ms.ToArray();
 
-            origin.Send(data, DeliveryMethod.ReliableOrdered);
+            foreach(NetPeer peer in server.ConnectedPeerList) { peer.Send(data, DeliveryMethod.ReliableOrdered); }
         }
 
         void AddNewDeveloper(NetworkData rec)
@@ -201,7 +201,7 @@ namespace Network
                 NetworkData dat = new NetworkData
                 {
                     type = DataRecieveType.developerAdd,
-                    other = developers[peer.Id]
+                    other = newDev
                 };
                 bf.Serialize(ms, dat);
                 byte[] data = ms.ToArray();
@@ -213,7 +213,7 @@ namespace Network
         void UpdateExistingDeveloper(NetworkData rec, NetPeer sender)
         {
             Developer updateDev = (Developer)rec.other;
-            developers[sender.Id] = updateDev;
+            developers[updateDev.GetArrIdx()] = updateDev;
             Console.WriteLine(updateDev.DisplayString());
 
             // put into a function
@@ -226,7 +226,7 @@ namespace Network
                 NetworkData dat = new NetworkData
                 {
                     type = DataRecieveType.developerUpdate,
-                    other = developers[peer.Id]
+                    other = developers[updateDev.GetArrIdx()]
                 };
                 bf.Serialize(ms, dat);
                 byte[] data = ms.ToArray();

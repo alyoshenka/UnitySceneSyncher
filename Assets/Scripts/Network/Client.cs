@@ -115,6 +115,22 @@ public class Client : NetworkConnection
         server.Send(data, DeliveryMethod.ReliableOrdered);
     }
 
+    void SendDeveloperData()
+    {
+        BinaryFormatter bf = new BinaryFormatter();
+        MemoryStream ms = new MemoryStream();
+
+        NetworkData dat = new NetworkData
+        {
+            type = DataRecieveType.developerAdd,
+            other = myDeveloper
+        };
+        bf.Serialize(ms, dat);
+        byte[] data = ms.ToArray();
+
+        server.Send(data, DeliveryMethod.ReliableOrdered);
+    }
+
     /// <summary>
     /// send the data across the network
     /// </summary>
@@ -205,7 +221,10 @@ public class Client : NetworkConnection
     void InitializeNewDeveloper(NetworkData rec, NetPeer sender)
     { 
         myDeveloper = (Developer)rec.other;
+        developers[myDeveloper.GetArrIdx()] = myDeveloper;
         if (displayDebugMessages) { Debug.Log("Developer initialized to " + myDeveloper.GetArrIdx()); }
+
+        SendDeveloperData(); // give server the developer
     }
 
     void AddNewDeveloper(NetworkData rec)
@@ -250,5 +269,5 @@ public class Client : NetworkConnection
 
     public void DisplayDebugMessages(bool val) { displayDebugMessages = val; }
 
-    void DeveloperUpdateNotification() { Debug.Log("Developer update event"); }
+    void DeveloperUpdateNotification() { if (displayDebugMessages) { Debug.Log("Developer update event"); } }
 }
