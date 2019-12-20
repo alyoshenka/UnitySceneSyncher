@@ -1,12 +1,7 @@
-﻿using System;
-
-using LiteNetLib;
-using LiteNetLib.Utils;
+﻿using LiteNetLib;
 using System.Threading;
-
 using UnityEngine;
 using UnityEditor;
-
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 using Network;
@@ -16,6 +11,8 @@ using Network;
 /// </summary>
 public class Client : NetworkConnection
 {
+    public static string serverDirectory = "SceneSyncherServer"; // directory for server values to be stored
+
     // change to all events
     public delegate void ConnectionRecieveEvent();
     public event ConnectionRecieveEvent developerUpdate;
@@ -197,7 +194,7 @@ public class Client : NetworkConnection
                 if (displayDebugMessages) { Debug.Log("Developer " + (int)rec.other + " disconnected"); }
                 break;
             case DataRecieveType.developerMessage:
-                HandleDeveloperMessage(developers[sender.Id] != null ? developers[sender.Id].GetName() : "null", (string)rec.other);         
+                HandleDeveloperMessage((string)rec.other);         
                 break;
 
             case DataRecieveType.serverInitialize:
@@ -247,7 +244,7 @@ public class Client : NetworkConnection
         if (displayDebugMessages) { Debug.Log("Updated dev " + newDev.GetArrIdx() + ": " + newDev.GetName()); }
     }
 
-    void HandleDeveloperMessage(string name, string msg) { Debug.Log(name + " said: " + msg); }
+    void HandleDeveloperMessage(string msg) { Debug.Log(msg); }
 
     #endregion
 
@@ -259,7 +256,7 @@ public class Client : NetworkConnection
         NetworkData dat = new NetworkData
         {
             type = Network.DataRecieveType.developerMessage,
-            other = message
+            other = myDeveloper.GetName() + " said: " + message
         };
         bf.Serialize(ms, dat);
         byte[] data = ms.ToArray();

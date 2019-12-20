@@ -8,7 +8,7 @@ namespace Network
     [DataContract]
     public class NetworkSettings
     {
-        public const string fileLocation = "settings.json";
+        public static string fileLocation = Client.serverDirectory + "/settings.json";
 
         public const string defServerAddress = "localhost";
         public const int defMaxPeerCount = 10;

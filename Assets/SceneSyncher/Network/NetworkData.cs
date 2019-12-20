@@ -3,7 +3,6 @@ using System.Runtime.InteropServices;
 
 namespace Network
 {
-
     /// <summary>
     /// type of data sent across the network
     /// </summary>
@@ -18,6 +17,10 @@ namespace Network
         serverInitialize        // initialize server connection
     }
     
+    /// <summary>
+    /// data that is sent over the network
+    /// note: all data is sent in this format
+    /// </summary>
     [System.Serializable]
     [StructLayout(LayoutKind.Sequential)]
     public struct NetworkData

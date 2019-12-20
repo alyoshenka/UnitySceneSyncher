@@ -2,18 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-using System.Threading;
-
 using System.Diagnostics;
-using System.Runtime;
 
 // todo: server data
 //  num connections
 //  ping
 //  etc
 
+/// <summary>
+/// starts/stops server
+/// </summary>
 public class ServerWindow : EditorWindow
 {
+    static string exeName = "SyncherServer.exe";
     static string start = "Start Server";
     static string stop = "Stop Server";
     static string buttonMsg = start;
@@ -30,7 +31,7 @@ public class ServerWindow : EditorWindow
 
     private void OnGUI()
     {
-        GUILayout.Label("Insert server warning here");
+        // GUILayout.Label("Insert server warning here");
 
         if (GUILayout.Button(new GUIContent(buttonMsg)))
         {
@@ -41,7 +42,9 @@ public class ServerWindow : EditorWindow
                 serverRunning = true;
 
                 // runs from main project file
-                p = System.Diagnostics.Process.Start("Network.exe");
+                ProcessStartInfo processStart = new ProcessStartInfo(exeName);
+                processStart.WorkingDirectory = Client.serverDirectory;
+                p = System.Diagnostics.Process.Start(processStart);
             }
             else
             {

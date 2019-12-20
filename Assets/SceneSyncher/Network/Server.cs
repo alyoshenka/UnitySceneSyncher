@@ -1,12 +1,8 @@
 ﻿using System;
-
 using LiteNetLib;
-using LiteNetLib.Utils;
 using System.Threading;
-
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
-
 using System.Diagnostics;
 
 // make sure everything is closed/disconnected correctly
@@ -178,7 +174,7 @@ namespace Network
                     UpdateExistingDeveloper(rec, sender);
                     break;
                 case DataRecieveType.developerMessage:
-                    HandleDeveloperMessage(developers[sender.Id] == null ? "null" : developers[sender.Id].GetName(), (string)rec.other);
+                    HandleDeveloperMessage((string)rec.other);
                     break;
                 case DataRecieveType.developerDelete:
                     DeleteDeveloper(rec);
@@ -286,9 +282,25 @@ namespace Network
             }
         }
 
-        void HandleDeveloperMessage(string name, string msg)
+        void HandleDeveloperMessage(string msg)
         {
-            Console.WriteLine(name + " said: " + msg);
+            Console.WriteLine(msg);
+
+            foreach(NetPeer peer in server.ConnectedPeerList)
+            {
+                BinaryFormatter bf = new BinaryFormatter();
+                MemoryStream ms = new MemoryStream();
+
+                NetworkData dat = new NetworkData
+                {
+                    type = DataRecieveType.developerMessage,
+                    other = msg
+                };
+                bf.Serialize(ms, dat);
+                byte[] data = ms.ToArray();
+
+                peer.Send(data, DeliveryMethod.ReliableOrdered);
+            }
         }
 
         #endregion
@@ -305,7 +317,7 @@ namespace Network
         public void LoadSettings()
         {
             settings = new NetworkSettings();
-            settings.Load("settings.json");
+            settings.Load(NetworkSettings.fileLocation);
         }
     }
 }

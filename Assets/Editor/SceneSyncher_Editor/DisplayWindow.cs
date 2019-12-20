@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
+/// <summary>
+/// displays information of connected devs
+/// </summary>
 public class DisplayWindow : EditorWindow
 {
     Client client;

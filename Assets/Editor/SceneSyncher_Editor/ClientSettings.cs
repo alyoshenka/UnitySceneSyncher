@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using UnityEditor;
 
+/// <summary>
+/// client connection settings
+/// </summary>
 public class SettingsWindow : EditorWindow
 {
     public static Network.NetworkSettings settings;

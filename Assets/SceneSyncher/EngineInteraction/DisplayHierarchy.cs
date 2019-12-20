@@ -1,11 +1,6 @@
 ﻿using UnityEngine;
 using UnityEditor;
 
-using System.Collections;
-using System.Collections.Generic;
-
-// https://unity3d.college/2017/09/04/customizing-hierarchy-bold-prefab-text/
-
 /// <summary>
 /// shows interactions between other devs and hierarchy
 /// </summary>

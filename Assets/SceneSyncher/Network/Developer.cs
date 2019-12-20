@@ -4,6 +4,9 @@ using UnityEditor;
 
 namespace Network
 {
+    /// <summary>
+    /// instance of networked peer
+    /// </summary>
     [System.Serializable]
     [StructLayout(LayoutKind.Sequential)]
     public class Developer
