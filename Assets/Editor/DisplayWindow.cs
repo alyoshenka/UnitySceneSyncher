@@ -5,7 +5,7 @@ using UnityEditor;
 
 public class DisplayWindow : EditorWindow
 {
-    public Client client;
+    Client client;
     string[] displays;
 
     [MenuItem("Window/UnitySceneSyncher/Display")]
@@ -15,41 +15,38 @@ public class DisplayWindow : EditorWindow
         win.Show();
     }
 
-    private void ReloadDevelopers()
+    public void SetupClient(Client c)
     {
-        if(null == displays || null == client)
-        {
-            Debug.Assert(null != client);
-            displays = new string[client.developers.Length];
+        client = c;
+        displays = new string[client.developers.Length];
+    }
 
-            Debug.Log("Reinitialized display client");
-        }
+    public void ClearClient() { client = null; }
 
+    void UpdateClient()
+    {
         for (int i = 0; i < client.developers.Length; i++)
         {
             if (null == client.developers[i]) { displays[i] = "open"; }
             else { displays[i] = client.developers[i].DisplayString(); }
         }
+    }
+
+    private void ReloadDevelopers()
+    {
+        UpdateClient();
 
         EditorUtility.SetDirty(this); // force reload
     }
 
-    private void Update()
+    private void OnInspectorUpdate()
     {
-        return;
-        if (null == client)
-        {
-            Client client = ((ClientWindow)GetWindow(typeof(ClientWindow))).client;
-            if (null == client) { return; }
-            client.developerUpdate += ReloadDevelopers;
-        }
+        if(null != client) { UpdateClient(); }
     }
 
     private void OnGUI()
     {
-        return;
-
-        if (null == client) { return; }
+        if(null == client) { return; }
 
         for (int i = 0; i < displays.Length; i++)
         {

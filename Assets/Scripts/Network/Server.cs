@@ -110,6 +110,8 @@ namespace Network
             Console.WriteLine(developers[peer.Id]?.GetName() + " disconnected with: " + disconnectInfo.Reason.ToString());
             developers[peer.Id] = null;
 
+
+
             // check how peer array reacts
         }
 
@@ -150,6 +152,9 @@ namespace Network
                     break;
                 case DataRecieveType.developerMessage:
                     HandleDeveloperMessage(developers[sender.Id] == null ? "null" : developers[sender.Id].GetName(), (string)rec.other);
+                    break;
+                case DataRecieveType.developerDelete:
+                    DeleteDeveloper(rec);
                     break;
                 default:
                     Debug.Assert(false);
@@ -226,7 +231,31 @@ namespace Network
                 bf.Serialize(ms, dat);
                 byte[] data = ms.ToArray();
 
-                sender.Send(data, DeliveryMethod.ReliableOrdered);
+                peer.Send(data, DeliveryMethod.ReliableOrdered);
+            }
+        }
+
+        void DeleteDeveloper(NetworkData rec)
+        {
+            int toDelete = ((Developer)rec.other).GetArrIdx();
+            developers[toDelete] = null;
+
+            // put into a function
+            // ok now this is actually terrible
+            foreach (NetPeer peer in server.ConnectedPeerList)
+            {
+                BinaryFormatter bf = new BinaryFormatter();
+                MemoryStream ms = new MemoryStream();
+
+                NetworkData dat = new NetworkData
+                {
+                    type = DataRecieveType.developerDelete,
+                    other = toDelete
+                };
+                bf.Serialize(ms, dat);
+                byte[] data = ms.ToArray();
+
+                peer.Send(data, DeliveryMethod.ReliableOrdered);
             }
         }
 

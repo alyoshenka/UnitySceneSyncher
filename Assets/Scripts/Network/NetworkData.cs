@@ -12,6 +12,7 @@ namespace Network
         developerInitialize,    // initialize current developer
         developerAdd,           // add a new developer connection
         developerUpdate,        // update an existing developer connection
+        developerDelete,        // clear an existing developer
         developerMessage,       // send a developer message
 
         serverInitialize        // initialize server connection

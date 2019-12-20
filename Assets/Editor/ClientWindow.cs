@@ -55,7 +55,7 @@ public class ClientWindow : EditorWindow
             else { Disconnect(); }
         }
 
-        if (GUILayout.Button(new GUIContent("Push Transform"))) { client?.SendData(); }
+        if (GUILayout.Button(new GUIContent("Push Transform"))) { client.SendData(); }
 
         // Settings
         sendWithInspectorUpdate = EditorGUILayout.Toggle("Update With Inspector?", sendWithInspectorUpdate);
@@ -89,13 +89,19 @@ public class ClientWindow : EditorWindow
         //dispWin.client = client;
         //dispWin.Hide();
 
-
         client.Start();
         clientThread = new Thread(client.Run);
         clientThread.Start();
 
+        InitializeDisplay();
         buttonMsg = disconnectMsg;
         if (displayDebugMessages) { Debug.Log("Trying to connect\n" + client.settings.DisplayString()); }
+    }
+
+    void InitializeDisplay()
+    {
+        DisplayWindow disp = (DisplayWindow)GetWindow(typeof(DisplayWindow));
+        disp.SetupClient(client);
     }
 
     void Disconnect()
@@ -108,6 +114,8 @@ public class ClientWindow : EditorWindow
         client = null;
         DisplayHierarchy.client = null;
         DevDisplay.client = null;
+
+        ((DisplayWindow)GetWindow(typeof(DisplayWindow))).ClearClient();
 
         if (displayDebugMessages) { Debug.Log("Disconnected from " + serverAddress); }
     }

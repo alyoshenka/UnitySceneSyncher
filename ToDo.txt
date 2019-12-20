@@ -23,3 +23,5 @@ test server process close
 test window closes
 
 organize into subfolders
+
+display should update more frequently

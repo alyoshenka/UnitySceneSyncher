@@ -50,7 +50,7 @@ public class ServerWindow : EditorWindow
                 serverRunning = false;
 
                 try { p?.Kill(); }
-                catch (System.InvalidOperationException e)
+                catch (System.InvalidOperationException)
                 {
                     if (ClientWindow.displayDebugMessages) { UnityEngine.Debug.Log("Server already closed"); }
                 }

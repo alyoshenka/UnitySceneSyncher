@@ -120,7 +120,11 @@ public class Client : NetworkConnection
     /// </summary>
     public void SendData()
     {
-        if(null == server) { return; }
+        if(null == server)
+        {
+            if (displayDebugMessages) { Debug.Log("Cannot send data, not connected to server"); }
+            return;
+        }
 
         SetData();
 
@@ -135,7 +139,7 @@ public class Client : NetworkConnection
         bf.Serialize(ms, dat);
         byte[] data = ms.ToArray();
 
-        server?.Send(data, DeliveryMethod.ReliableOrdered);
+        server.Send(data, DeliveryMethod.ReliableOrdered);
     }
 
     #region Events
@@ -172,8 +176,12 @@ public class Client : NetworkConnection
                 UpdateExistingDeveloper(rec);
                 developerUpdate.Invoke();
                 break;
+            case DataRecieveType.developerDelete:
+                developers[(int)rec.other] = null;
+                if (displayDebugMessages) { Debug.Log("Developer " + (int)rec.other + " disconnected"); }
+                break;
             case DataRecieveType.developerMessage:
-                HandleDeveloperMessage(developers[sender.Id] == null ? developers[sender.Id].GetName() : "null", (string)rec.other);         
+                HandleDeveloperMessage(developers[sender.Id] != null ? developers[sender.Id].GetName() : "null", (string)rec.other);         
                 break;
 
             case DataRecieveType.serverInitialize:
