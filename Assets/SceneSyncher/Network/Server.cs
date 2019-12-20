@@ -317,7 +317,7 @@ namespace Network
         public void LoadSettings()
         {
             settings = new NetworkSettings();
-            settings.Load(NetworkSettings.fileLocation);
+            settings.Load(LocationVariables.settingsLocation);
         }
     }
 }

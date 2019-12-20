@@ -3,6 +3,13 @@ using System.Runtime.InteropServices;
 
 namespace Network
 {
+    public class LocationVariables
+    {
+        public static string serverDirectory = "SceneSyncherServer"; // directory for server values to be stored
+        public static string exeName = "SyncherServer.exe"; // server executable
+        public static string settingsLocation = "settings.json"; // settings location
+    }
+
     /// <summary>
     /// type of data sent across the network
     /// </summary>

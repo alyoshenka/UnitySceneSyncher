@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEditor;
 using System.Diagnostics;
 
@@ -14,7 +12,6 @@ using System.Diagnostics;
 /// </summary>
 public class ServerWindow : EditorWindow
 {
-    static string exeName = "SyncherServer.exe";
     static string start = "Start Server";
     static string stop = "Stop Server";
     static string buttonMsg = start;
@@ -42,8 +39,8 @@ public class ServerWindow : EditorWindow
                 serverRunning = true;
 
                 // runs from main project file
-                ProcessStartInfo processStart = new ProcessStartInfo(exeName);
-                processStart.WorkingDirectory = Client.serverDirectory;
+                ProcessStartInfo processStart = new ProcessStartInfo(Network.LocationVariables.exeName);
+                processStart.WorkingDirectory = Network.LocationVariables.serverDirectory;
                 p = System.Diagnostics.Process.Start(processStart);
             }
             else

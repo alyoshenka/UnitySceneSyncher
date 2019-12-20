@@ -8,8 +8,6 @@ namespace Network
     [DataContract]
     public class NetworkSettings
     {
-        public static string fileLocation = Client.serverDirectory + "/settings.json";
-
         public const string defServerAddress = "localhost";
         public const int defMaxPeerCount = 10;
         public const string defConnectionKey = "SomeConnectionKey";
@@ -29,7 +27,7 @@ namespace Network
         /// </summary>
         public void Save()
         {
-            using (Stream stream = File.OpenWrite(fileLocation))
+            using (Stream stream = File.OpenWrite(LocationVariables.serverDirectory + "/" + LocationVariables.settingsLocation))
             {           
                 DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(NetworkSettings));
                 ser.WriteObject(stream, this);
@@ -61,7 +59,7 @@ namespace Network
             saved = true;
         }
 
-        public void Load() { Load(fileLocation); }
+        public void Load() { Load(LocationVariables.settingsLocation); }
 
         /// <summary>
         /// sets all values to defaults

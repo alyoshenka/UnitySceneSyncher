@@ -11,8 +11,7 @@ using Network;
 /// </summary>
 public class Client : NetworkConnection
 {
-    public static string serverDirectory = "SceneSyncherServer"; // directory for server values to be stored
-
+   
     // change to all events
     public delegate void ConnectionRecieveEvent();
     public event ConnectionRecieveEvent developerUpdate;

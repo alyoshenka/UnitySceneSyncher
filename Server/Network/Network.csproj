@@ -7,7 +7,7 @@
     <ProjectGuid>{AC57A378-0610-4B00-ADEB-4CD12920E077}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>Network</RootNamespace>
-    <AssemblyName>Network</AssemblyName>
+    <AssemblyName>SyncherServer</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -33,8 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="LiteNetLib">
-      <HintPath>..\..\Assets\LiteNetLib\LiteNetLib.dll</HintPath>
+    <Reference Include="LiteNetLib, Version=0.8.418.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Assets\SceneSyncher\LiteNetLib\LiteNetLib.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -50,22 +51,22 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\Assets\Scripts\Network\DeserializationBinder.cs">
+    <Compile Include="..\..\Assets\SceneSyncher\Network\DeserializationBinder.cs">
       <Link>DeserializationBinder.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\Scripts\Network\Developer.cs">
+    <Compile Include="..\..\Assets\SceneSyncher\Network\Developer.cs">
       <Link>Developer.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\Scripts\Network\NetworkConnection.cs">
+    <Compile Include="..\..\Assets\SceneSyncher\Network\NetworkConnection.cs">
       <Link>NetworkConnection.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\Scripts\Network\NetworkData.cs">
+    <Compile Include="..\..\Assets\SceneSyncher\Network\NetworkData.cs">
       <Link>NetworkData.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\Scripts\Network\NetworkSettings.cs">
+    <Compile Include="..\..\Assets\SceneSyncher\Network\NetworkSettings.cs">
       <Link>NetworkSettings.cs</Link>
     </Compile>
-    <Compile Include="..\..\Assets\Scripts\Network\Server.cs">
+    <Compile Include="..\..\Assets\SceneSyncher\Network\Server.cs">
       <Link>Server.cs</Link>
     </Compile>
     <Compile Include="Program.cs" />
