@@ -1,6 +1,6 @@
 Initial Implementation -> https://github.com/alyoshenka/UnitySceneSyncher/releases/tag/1.0
 
-Assessment Submission -> 
+Assessment Submission -> https://github.com/alyoshenka/UnitySceneSyncher/releases/tag/1.1
 
 Project Files -> https://github.com/alyoshenka/UnitySceneSyncher
 
