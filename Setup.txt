@@ -1,0 +1,26 @@
+To set up Unity Scene Syncher:
+
+Setup:
+
+    Download latest release .zip file and extract
+
+    For client side connections, import scenesyncher.unitypackage into project
+
+    For server connection, copy SceneSyncherServer folder into root project directory
+
+Use - Server:
+
+    Run SceneSyncherServer/SyncherServer.exe
+    This can also be done through the UnitySceneSyncher/Server window
+
+    Settings are located in SceneSyncherServer/settings.json
+    They can be edited manually or through the SceneSyncherServer/Settings window
+    It is advised to not change the settings when the server is running
+
+Use - Client:
+
+    Client connection can be managed through the UnitySceneSyncher/Client window
+
+
+
+

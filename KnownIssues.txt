@@ -1,0 +1,22 @@
+Known Issues and Inconveniences 
+
+Note: this was built using Unity 2019.2.11f1 and has not been extensively tested with other releases
+
+Slow update from inspector to server to display
+    Most updates are done in OnInspectorUpdate. This happens 10 times per second and therefore
+    results in choppy behavior
+
+Very precise file structure needed for setup
+
+Poor indication of server declining connection
+    Message is given upon successful server connection, but not if the server declines or the   
+    connection was otherwise successful
+
+Tendency for disconnection to do IdleTimeout
+    This typically happens on first trying to connect and then does not happen after, however
+    it is still annoying
+
+Display window only updates on mouse over
+    Display updates OnGUI, ultimately this would update whenever a server update is recieved
+
+More robust testing should be done

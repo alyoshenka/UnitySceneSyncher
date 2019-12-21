@@ -1,0 +1,30 @@
+Issues or blockers:
+    The original idea was to make this project synch .unity scenes. The difficulty with this
+    is that unity reload the editor every time the scene file changes. I decided not to try to
+    synch scenes for this reason. This also took out a lot of (overscoped) complexity.
+
+    It is difficult to test the project with just one computer. I alternated between using two
+    connections in one open project and using two different versions of the editor so as to be 
+    able to have multiple instances at a time. Testing has been done between different ips, 
+    however not as much as would be optimal.
+   
+Performance Impact:
+    I did not test the performance of this application yet. I would put this task under 
+    Issues/Blockers because I don't yet know how to go about accurately testing performance
+    in engine. This would also require testing with a large number of connections which in
+    itself is another difficult task.
+
+Modularity:
+    The client and server are very tightly coupled, however it is not difficult to add to the
+    type of data that is passed between them. I would say that the editor windows are very modular
+    because they serve only as aids to use existing functions.
+
+Would I Use It?
+    At its current state, no. That being said, I do enjoy the project itself and would like to
+    make it usable in the future. In terms of usability, scaling back from changing the Unity 
+    project to just displaying where other developers are within their own instance of the project
+    reduces risks of corrupting work and simply adds better cues as to who is working on what. At
+    bare minimum, I really like the message feature and would like to expand upon that because I 
+    think being able to send messages to other people from within engine would improve workflow.
+
+Roadmap -> NextSteps + KnownIsues

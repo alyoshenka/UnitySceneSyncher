@@ -1,0 +1,30 @@
+Client Window - manages client connection to server
+
+    Your Name: your name as it will appear across the server
+        Note: default for all connections is the same, it is advised to change this
+    Display Color: the color used to indicate your position in the scene and selected Game Object
+        Note: default for all connections is the same, it is advised to change this
+    Set Color: sets your color to the specifed display color
+    Connect/Disconnect: connect to/ disconnect from server
+    Push Transform: collect and send data to the server
+    Update With Inspector: collect and send data to server on every inspector ipdate
+    Display Debug Messages: allow Debug.Logging of server status and events
+    Display Devs In Scene: draw positions of other peers in the Scene View
+    Display Networked Scene Hierarchy: show currently selected GameObject of peers
+    Send A Message: a message to send to the server
+    Send: send above message to server
+
+Settings Window - manages client and server settings
+
+    Server Address: the ip address of the server
+    Max Peer Count: maximum number of allowed connections
+    Connection Key: password for server access
+    Port: connection port
+    Save: save settings
+    Reload: load current settings file, sets to default values if file cannot be found
+
+Server Window - starts server
+
+    Start/Stop Sever: start/stop server process
+
+Display Window - show current status of peers
